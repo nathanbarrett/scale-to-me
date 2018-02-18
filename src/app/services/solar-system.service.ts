@@ -302,7 +302,11 @@ export class SolarSystemService {
   }
 
   createInfoWindow (content: string): google.maps.InfoWindow {
-    const infoWindow = new google.maps.InfoWindow({content})
+    const infoWindowOptions: google.maps.InfoWindowOptions = {content}
+    if (window.innerWidth <= 576) {
+      infoWindowOptions.maxWidth = 300
+    }
+    const infoWindow = new google.maps.InfoWindow(infoWindowOptions)
     return infoWindow
   }
 
@@ -329,32 +333,38 @@ export class SolarSystemService {
   }
 
   getInfoWindowContent (object: IMapObject): string {
-    let content = `
-      <div style="width: 100%; text-align: center;">
-        <h4 style="color: #000000;">${object.name}</h4>
+    const content = `
+      <div style="color: #000000;">
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <img class="img-fluid" src="${object.mapData.infoWindowImageUrl}"
+                      style="display: inline-block" />
+          </div>
+          <div class="col-12 col-md-6">
+            <div style="width: 100%; text-align: center; margin-top: 10px;">
+                <h4 style="color: #000000;">${object.name}</h4>
+            </div>
+            <p style="font-size: 16px; padding: 10px;">${object.mapData.infoWindowContent}</p>
+          </div>
+        </div>
+        <hr />
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8 col-lg-6">
+            <h5>Did you know?</h5>
+             <p>${object.mapData.didYouKnow}</p>
+          </div>
+        </div>
       </div>
-      <p>${object.mapData.infoWindowContent}</p>
     `
-    if (object.mapData.infoWindowImageUrl) {
-      content += `
-      <div style="width: 100%; text-align: center;">
-        <img src="${object.mapData.infoWindowImageUrl}"
-             style="display: inline-block" />
-      </div>
-      `
-    }
-    if (object.mapData.didYouKnow) {
-      content += `<h5 style="color: #000000;">Did you know?</h5><p>${object.mapData.didYouKnow}</p>`
-    }
     return this.replaceAmericanTerms(content)
   }
 
   getInfoBodyInfoWindowContent (infoBody: IMapObject): string {
     let content = `
       <div style="width: 100%; text-align: center;">
-        <h4 style="color: #000000">${infoBody.name}</h4>
+        <h4>${infoBody.name}</h4>
       </div>
-      <p>${infoBody.mapData.infoWindowContent}</p>
+      <p style="font-size: 10px;">${infoBody.mapData.infoWindowContent}</p>
     `
     if (infoBody.mapData.infoWindowImageUrl) {
       content += `
@@ -365,7 +375,7 @@ export class SolarSystemService {
       `
     }
     if (infoBody.mapData.didYouKnow) {
-      content += `<h5 style="color: #000000;">Did you know?</h5><p>${infoBody.mapData.didYouKnow}</p>`
+      content += `<h5>Did you know?</h5><p>${infoBody.mapData.didYouKnow}</p>`
     }
     content = this.insertScaledDistance(infoBody, content)
     content = this.replaceAmericanTerms(content)
@@ -480,6 +490,14 @@ export class SolarSystemService {
       return
     }
     if (bodyName.toLowerCase() === object.name.toLowerCase()) {
+      object.mapData.infoWindow.close()
+      const options: google.maps.InfoWindowOptions = {
+        content: object.mapData.infoWindow.getContent()
+      }
+      if (window.innerWidth <= 576) {
+        options.maxWidth = 300
+      }
+      object.mapData.infoWindow.setOptions(options)
       object.mapData.infoWindow.open(this.map, object.mapData.marker)
       return
     }
@@ -685,45 +703,6 @@ export class SolarSystemService {
 
   onSunDragEnd (callback: Function) {
     this.onSunDragEndCallback = callback
-  }
-
-  destroyMapObjects (): void {
-    //this.ssModel = null
-    /*
-    this.solarSystem.sun.mapData.marker.setMap(null)
-    this.solarSystem.sun.mapData.marker = null
-    this.solarSystem.planets.forEach(planet => {
-      planet.mapData.marker.setMap(null)
-      planet.mapData.marker = null
-      planet.mapData.infoWindow = null
-      if (!planet.moons) {
-        return
-      }
-      planet.moons.forEach(moon => {
-        if (moon.mapData.marker) {
-          moon.mapData.marker.setMap(null)
-          moon.mapData.marker = null
-          moon.mapData.infoWindow = null
-        }
-      })
-    })
-    this.solarSystem.satellites.forEach(satellite => {
-      if (!satellite.mapData.marker) {
-        return
-      }
-      satellite.mapData.marker.setMap(null)
-      satellite.mapData.marker = null
-      satellite.mapData.infoWindow = null
-    })
-    this.solarSystem.infoBodies.forEach(infoBody => {
-      infoBody.mapData.infoWindow = null
-      if (!infoBody.mapData.marker) {
-        return
-      }
-      infoBody.mapData.marker.setMap(null)
-      infoBody.mapData.marker = null
-    })
-    */
   }
 
 }

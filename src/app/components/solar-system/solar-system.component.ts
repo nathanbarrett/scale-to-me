@@ -73,7 +73,7 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
     this.solarSystemService.setBearing(this.bearing)
     this.solarSystemService.setAllMarkers()
     this.mapZoomCheck()
-    this.map.setCenter(this.solarSystemService.center)
+    this.solarSystemService.centerOn('The Sun')
     this.solarSystemService.onSunDragEnd((latLng: google.maps.LatLng) => {
       this.updateQueryParams({center: `${latLng.lat()},${latLng.lng()}`})
     })

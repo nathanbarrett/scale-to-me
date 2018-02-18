@@ -10,8 +10,8 @@ export let SolarSystem: ISolarSystem = {
       marker: null,
       iconUrl: '/assets/map/map-icon-sun.png',
       infoWindowContent: `
-      This hot ball of plasma that gives life to the Earth and makes sure that our water stays wet and not frozen
-       is now {{scaledDiameter}} wide which is almost the size of a hot air balloon. <br />
+      It is now about the size of a hot air balloon. Use the address input above to move it all to a location you are more familiar with.
+      You can also drag around the Sun's map icon.<br />
        <a href="https://free3d.com/3d-model/hot-air-balloon-54348.html" style="font-size: 10px" target="_blank">
         Hot Air Balloon Courtesy Of Iridesium
        </a>

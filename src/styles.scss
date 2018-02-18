@@ -1,3 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('../node_modules/bootswatch/dist/cyborg/bootstrap.css');
-@import url('../node_modules/font-awesome/css/font-awesome.css');
+/* Bootstrap variable overrides here */
+$body-bg: rgb(35, 46, 62);
+$body-color: rgb(213, 149, 98);
+
+@import "~bootstrap/scss/bootstrap";
+@import "~font-awesome/css/font-awesome.css";
