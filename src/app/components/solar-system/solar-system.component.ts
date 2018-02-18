@@ -9,7 +9,7 @@ import * as MapStyles from '../../data/google-map-styles'
 @Component({
   selector: 'app-solar-system',
   templateUrl: './solar-system.component.html',
-  styleUrls: ['./solar-system.component.css']
+  styleUrls: ['./solar-system.component.scss']
 })
 export class SolarSystemComponent implements OnInit, OnDestroy {
 
