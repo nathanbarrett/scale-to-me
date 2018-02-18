@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-12 d-block d-md-none">
+    <div class="btn-group">
+      <button type="button"
+              class="btn btn-default"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+        <i class="fa fa-2x fa-bars"></i>
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" routerLink="/">
+          <img src="/assets/icons/solar-system-icon.png" width="30"/> The Solar System
+        </a>
+        <a class="dropdown-item" routerLink="/milky-way">
+          <img src="/assets/icons/milky-way-icon.png" width="30"/> The Milky Way
+        </a>
+        <a class="dropdown-item" routerLink="/earth-timeline">
+          <img src="/assets/icons/earth-timeline-icon.png" width="30"/> Earth's Timeline
+        </a>
+        <a class="dropdown-item" routerLink="/atom">
+          <img src="/assets/icons/atom-icon.png" width="30"/> Atoms
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="d-none d-md-block col-lg-3 col-md-4">
+    <ul class="nav-container">
+      <li class="nav-item">
+        <a routerLink="/" class="nav-link">
+          <img src="/assets/icons/solar-system-icon.png" width="30"/> The Solar System
+        </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/milky-way" class="nav-link">
+          <img src="/assets/icons/milky-way-icon.png" width="30"/> The Milky Way
+        </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/earth-timeline" class="nav-link">
+          <img src="/assets/icons/earth-timeline-icon.png" width="30"/> Earth's Timeline
+        </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/atom" class="nav-link">
+          <img src="/assets/icons/atom-icon.png" width="30"/> Atoms
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="col col-lg-9 col-md-8">
+    <h1 *ngIf="!googleMapsLoaded">Waiting For Google Maps to Load</h1>
+    <router-outlet *ngIf="googleMapsLoaded"></router-outlet>
+  </div>
+</div>
+
