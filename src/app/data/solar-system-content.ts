@@ -2128,10 +2128,9 @@ export let SolarSystem: ISolarSystem = {
         infoWindowImageUrl: '/assets/images/voyager1.jpg',
         infoWindowContent: `Voyager 1, launched in September 1977, was one of two satellites sent on a
           <a href="https://en.wikipedia.org/wiki/Grand_Tour_program" target="_blank">Grand Tour</a> of the outer planets of our solar
-           system. On August 25th, 2012 Voyager 1 became the first man made object to exit our solar system and enter the interstellar
-           medium. In our scaled model it is currently {{scaledDistance}} away from the sun and traveling at a rate of {{scaledSpeed}}. It
-           is obviously very, very small compared to everything else. Its communication dish is about 34 nanometers wide which is roughly
-           1 / 3000th the width of a human hair.`,
+           system. On August 25th, 2012 Voyager 1 became the first man made object to exit our solar system. In our scaled model it is
+           currently {{scaledDistance}} away from the sun and traveling at a rate of {{scaledSpeed}}. Its communication dish is about 34
+           nanometers wide which is roughly 1 / 3000th the width of a human hair.`,
         marker: null,
         didYouKnow: `On February 14th, 1990 the Voyager 1 satellite was on its way out of the solar system. At the request of
          of astronomer, author, and public figure Carl Sagan the satellite was commanded to turn around and take one last picture

@@ -49,7 +49,7 @@ export class SolarSystemService {
 
   lightBeamBearing: Bearing = Defaults.DEFAULT_BEARING
 
-  unitSystemMetric = false
+  unitSystemMetric = Defaults.DEFAULT_UNIT_SYSTEM_METRIC
 
   showMoons = false
 
@@ -349,7 +349,7 @@ export class SolarSystemService {
         </div>
         <hr />
         <div class="row justify-content-center">
-          <div class="col-12 col-md-8 col-lg-6">
+          <div class="col-12 col-md-8">
             <h5>Did you know?</h5>
              <p>${object.mapData.didYouKnow}</p>
           </div>
@@ -361,10 +361,11 @@ export class SolarSystemService {
 
   getInfoBodyInfoWindowContent (infoBody: IMapObject): string {
     let content = `
+      <div style="color: #000000">
       <div style="width: 100%; text-align: center;">
         <h4>${infoBody.name}</h4>
       </div>
-      <p style="font-size: 10px;">${infoBody.mapData.infoWindowContent}</p>
+      <p style="font-size: 16px;">${infoBody.mapData.infoWindowContent}</p>
     `
     if (infoBody.mapData.infoWindowImageUrl) {
       content += `
@@ -375,8 +376,9 @@ export class SolarSystemService {
       `
     }
     if (infoBody.mapData.didYouKnow) {
-      content += `<h5>Did you know?</h5><p>${infoBody.mapData.didYouKnow}</p>`
+      content += `<h5 style="margin-top: 10px;">Did you know?</h5><p>${infoBody.mapData.didYouKnow}</p>`
     }
+    content += '</div>'
     content = this.insertScaledDistance(infoBody, content)
     content = this.replaceAmericanTerms(content)
     return content
@@ -679,6 +681,10 @@ export class SolarSystemService {
     if (this.lightBeam) {
       this.lightBeam.setMap(null)
     }
+  }
+
+  isLightBeamRunning (): boolean {
+    return !! (this.lightBeam && this.lightBeam.getMap())
   }
 
   updateLightBeam (secondsElapsed: number): void {

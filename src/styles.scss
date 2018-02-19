@@ -2,5 +2,11 @@
 $body-bg: rgb(35, 46, 62);
 $body-color: rgb(213, 149, 98);
 
+$primary: rgb(213, 149, 98);
+
+.murica {
+  background: linear-gradient(to right, red, white, blue);
+  color: #000000 !important;
+}
 @import "~bootstrap/scss/bootstrap";
 @import "~font-awesome/css/font-awesome.css";

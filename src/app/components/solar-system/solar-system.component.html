@@ -1,35 +1,108 @@
 <div class="row justify-content-center" style="margin-top: 50px;">
   <div class="col col-md-10 col-lg-8">
-    <h4 class="text-center">How Big Is It?</h4>
-    <p class="text-center">
-      "This space stuff is just too big! I will never understand it!"
-    </p>
     <p>
-      Have you heard this from someone, or even thought it yourself? Yes, space is really big and very spread out. Big
-      things are going on and we are very small in comparison. The center of the Sun is 27,000,000 degrees Fahrenheit.
-      Venus is 108,200,000 kilometers away from the Sun. The Supermassive Black Hole at the center of our galaxy has the
-      mass of over 4,000,000 Suns. Ok, great. What does all that mean?
-    </p>
-    <p>
-      In an effort to close this mental disconnect a little lets build a pretend universe where we shrink everything
-      down simultaneously (SCALEPERCENTAGE to be exact). At this point the Sun is about the size of a hot air balloon.
-      Now use the address bar below (if you like) and move your new hot air balloon sun to an address where you are
-      familiar with the surroundings. From there you can check out the other objects to get a better feel for where
-      things are in our Solar
-      System.
+      How vast is our solar system? To get a better grip on it let's shrink everything down to where the distance
+      between The Sun and Neptune is about the same length as the marathon.
     </p>
   </div>
 </div>
-<div class="row justify-content-center" style="margin-bottom: 30px;">
-  <div class="col col-md-8 col-lg-6">
-    <h6>You can move the Sun with this. You can also drag the Sun marker as well.</h6>
+<div class="row justify-content-md-between" style="margin-bottom: 30px;">
+  <div class="col-12 col-md-8 col-lg-6">
     <div class="input-group">
       <input type="text"
              class="form-control"
              id="sunAddress"
              name="sunAddress"
              placeholder="Set an address for the sun"/>
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary dropdown-toggle"
+                type="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+          Jump To
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item"
+             href="javascript:void(0)"
+             (click)="centerOn('planets')">
+            Show All Planets
+          </a>
+          <a class="dropdown-item"
+             href="javascript:void(0)"
+             (click)="centerOn('the sun')">
+            The Sun
+          </a>
+          <div role="separator" class="dropdown-divider"></div>
+          <a class="dropdown-item"
+             *ngFor="let planet of solarSystemService.getSolarSystem().planets"
+             href="javascript:void(0)"
+             (click)="centerOn(planet.name)">
+            {{ planet.name }}
+          </a>
+          <div role="separator" class="dropdown-divider"></div>
+          <a class="dropdown-item"
+             href="javascript:void(0)"
+             (click)="centerOn('pluto')">
+            Pluto
+          </a>
+          <a class="dropdown-item"
+             href="javascript:void(0)"
+             (click)="centerOn('voyager 1')">
+            Voyager 1
+          </a>
+          <a class="dropdown-item"
+             href="javascript:void(0)"
+             (click)="centerOn('moon')">
+            The Moon
+          </a>
+          <a class="dropdown-item"
+             href="javascript:void(0)"
+             (click)="centerOn('proxima centauri')">
+            Proxima Centauri
+          </a>
+          <div role="separator" class="dropdown-divider"></div>
+          <a class="dropdown-item"
+             href="javascript:void(0)"
+             (click)="centerOn('all')">
+            All Objects
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="btn-group">
+      <button type="button"
+              class="btn btn-outline-secondary dropdown-toggle"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+        <i class="fa fa-compass"></i>
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item"
+           *ngFor="let direction of ['North', 'North East', 'East', 'South East', 'South', 'South West', 'West', 'North West', 'Current Positions']"
+           (click)="setBearing(direction)"
+           href="javascript:void(0)">
+          {{ direction }}
+        </a>
+      </div>
+    </div>
+    <button type="button"
+            class="btn"
+            [ngClass]="{'btn-primary': ! isLightBeamRunning(), 'btn-secondary-outline': isLightBeamRunning()}"
+            id="lightBeamToggle"
+            (click)="toggleLightBeam()">
+      {{ isLightBeamRunning() ? 'Cancel' : 'Start' }} Light Beam
+    </button>
+    <button type="button"
+            (click)="switchMeasurementSystem()"
+            style="width: 135px;"
+            [ngClass]="{murica: !isMeasurementSystemMetric()}"
+            class="btn btn-dark">
+      {{ isMeasurementSystemMetric() ? 'Metric' : 'Freedom Units' }}
+    </button>
   </div>
 </div>
 <div class="row justify-content-center">

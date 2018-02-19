@@ -1,10 +1,12 @@
 import { Router, ActivatedRoute, Params } from '@angular/router'
-import { Component, OnDestroy, OnInit } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 import {} from '@types/googlemaps'
 import { SolarSystemService } from '../../services/solar-system.service'
 import { Bearing, MapStyle } from '../../enums/bearing.enum'
 import * as Defaults from '../../data/defaults'
 import * as MapStyles from '../../data/google-map-styles'
+
+declare var $: any
 
 @Component({
   selector: 'app-solar-system',
@@ -47,10 +49,17 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
   ngOnInit () {
     this.initMap()
     this.initAutocomplete()
+    $('#lightBeamToggle').popover({
+      placement: 'auto',
+      trigger: 'click',
+      title: 'The Speed Of Light',
+      content: `This gives you an idea of how fast light goes through our solar system. Its scaled down speed is around 6.29mph which is
+       the speed of a fast jog.`
+    })
   }
 
   ngOnDestroy () {
-    this.solarSystemService.destroyMapObjects()
+    $('#lightBeamToggle').popover('dispose')
   }
 
   initMap (): void {
@@ -98,7 +107,8 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
   }
 
   setBearing (bearing: string): void {
-    this.bearing = parseInt(bearing, 10)
+    const intBearing = Bearing[bearing.replace(' ', '')]
+    this.bearing = parseInt(intBearing, 10)
     this.updateQueryParams({bearing: this.bearing})
     this.solarSystemService.setBearing(this.bearing)
     this.solarSystemService.setAllMarkers()
@@ -128,6 +138,13 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
     this.solarSystemService.toggleMoonMarkers(this.map.getZoom() >= this.moonZoomThreshold)
   }
 
+  toggleLightBeam (): void {
+    if (this.solarSystemService.isLightBeamRunning()) {
+      return this.cancelLightBeam()
+    }
+    this.startLightBeam()
+  }
+
   startLightBeam (): void {
     this.map.setCenter(
       this.solarSystemService.solarSystem.sun.mapData.marker.getPosition()
@@ -145,7 +162,10 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
     this.solarSystemService.centerOn(bodyName.toLowerCase())
   }
 
-  switchMeasurementSystem (metric: boolean): void {
+  switchMeasurementSystem (metric?: boolean): void {
+    if (metric !== true && metric !== false) {
+      metric = ! this.isMeasurementSystemMetric()
+    }
     this.solarSystemService.switchMeasurementSystem(metric)
   }
 
@@ -161,6 +181,10 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
     this.map.setCenter(this.solarSystemService.center)
     this.map.setZoom(this.defaultZoom)
     this.solarSystemService.setAllMarkers()
+  }
+
+  isLightBeamRunning (): boolean {
+    return this.solarSystemService.isLightBeamRunning()
   }
 
 }
