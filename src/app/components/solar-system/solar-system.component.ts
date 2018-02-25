@@ -2,9 +2,10 @@ import { Router, ActivatedRoute, Params } from '@angular/router'
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import {} from '@types/googlemaps'
 import { SolarSystemService } from '../../services/solar-system.service'
-import { Bearing, MapStyle } from '../../enums/bearing.enum'
+import { Bearing } from '../../enums/bearing.enum'
+import { MapStyle } from '../../enums/map-style.enum'
 import * as Defaults from '../../data/defaults'
-import * as MapStyles from '../../data/google-map-styles'
+import { MapStyles } from '../../data/google-map-styles'
 
 declare var $: any
 
@@ -124,9 +125,7 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
 
   createMap (): google.maps.Map {
     const mapOptions: google.maps.MapOptions = {...this.defaultMapOptions}
-    if (Defaults.DEFAULT_MAP_STYLE !== MapStyle.Standard) {
-      mapOptions.styles = MapStyles[Defaults.DEFAULT_MAP_STYLE]
-    }
+    mapOptions.styles = MapStyles[Defaults.DEFAULT_MAP_STYLE]
     const map = new google.maps.Map(document.getElementById('map'), mapOptions)
     map.addListener('zoom_changed', () => {
       this.mapZoomCheck()

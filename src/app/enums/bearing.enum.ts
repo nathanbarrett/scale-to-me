@@ -9,7 +9,3 @@ export enum Bearing {
   SouthEast = 135,
   CurrentPositions = 360
 }
-
-export enum MapStyle {
-  Standard = 'standard', Night = 'night', Dark = 'dark', Aubergine = 'aubergine'
-}

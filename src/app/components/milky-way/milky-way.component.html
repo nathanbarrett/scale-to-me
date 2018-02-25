@@ -1,3 +1,43 @@
-<p>
-  milky-way works!
-</p>
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8">
+    <p>
+      To better understand the size of the Milky Way we need to shrink down our solar system to the size of a U.S. quarter
+    </p>
+    <img src="/assets/images/solar-system-quarter.png" style="width: 300px;" />
+    <p>
+      Keep in mind that it takes light 4.1 hours to go from the center of the quarter to the outside.
+    </p>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8">
+    <p>
+      Now move our new Solar System quarter to a location you are more familiar with
+    </p>
+  </div>
+  <div class="col-12">
+    <div class="input-group">
+      <input type="text"
+             id="milkyWayAddress"
+             class="form-control"
+             placeholder="Change The Location Of Solar System Quarter" />
+    </div>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8">
+    <p>
+      Ready? Now use the button below to show the size of the Milky Way
+    </p>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-outline-primary" (click)="toggleMilkyWay()">
+      {{ milkyWayVisible ? 'Hide' : 'Show' }} Milky Way
+    </button>
+  </div>
+</div>
+<div class="row justify-content-center mt-2">
+  <div class="col-12 col-md-10">
+    <div id="milkyWayMap"></div>
+  </div>
+</div>

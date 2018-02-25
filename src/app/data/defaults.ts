@@ -1,4 +1,5 @@
-import { Bearing, MapStyle } from '../enums/bearing.enum'
+import { Bearing } from '../enums/bearing.enum'
+import { MapStyle } from '../enums/map-style.enum'
 
 export const DEFAULT_LAT = 40.7814905
 export const DEFAULT_LNG = -73.9732505
