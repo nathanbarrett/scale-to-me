@@ -23,6 +23,21 @@ a.nav-link {
   cursor: pointer;
   font-size: 15px;
   color: white;
+  padding: 0;
+  text-align: center;
+}
+
+.nav-link-active {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.nav-link img {
+  filter: brightness(0.25);
+}
+
+.nav-link.nav-link-active img {
+  filter: brightness(1);
 }
 
 a.nav-link:hover {
@@ -33,5 +48,14 @@ a.nav-link:disabled {
   color: #b6b6b6 !important;
   pointer-events: none !important;
   cursor: default !important;
+}
+
+.nav-body {
+  background-color: #111;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 80px !important;
+  z-index: 9999;
 }
 

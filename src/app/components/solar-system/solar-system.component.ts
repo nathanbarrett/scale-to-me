@@ -126,7 +126,7 @@ export class SolarSystemComponent implements OnInit, OnDestroy {
   createMap (): google.maps.Map {
     const mapOptions: google.maps.MapOptions = {...this.defaultMapOptions}
     mapOptions.styles = MapStyles[Defaults.DEFAULT_MAP_STYLE]
-    const map = new google.maps.Map(document.getElementById('map'), mapOptions)
+    const map = new google.maps.Map(document.getElementById('solarSystemMap'), mapOptions)
     map.addListener('zoom_changed', () => {
       this.mapZoomCheck()
     })

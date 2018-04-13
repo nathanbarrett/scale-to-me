@@ -4,6 +4,8 @@ import { environment } from '../../../environments/environment'
 
 const googleMapsUrl = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsAPIKey}&libraries=places`
 
+declare var $: any
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,5 +20,6 @@ export class AppComponent implements OnInit {
     service.load(googleMapsUrl).then(alreadyLoaded => {
       this.googleMapsLoaded = true
     })
+    $('[data-toggle="popover"]').popover()
   }
 }
