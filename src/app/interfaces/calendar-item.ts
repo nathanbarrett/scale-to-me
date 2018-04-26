@@ -9,5 +9,7 @@ export interface CalendarItem {
   description?: string,
   content?: string,
   yearsAgoEnd?: number,
-  dateEnd?: Moment
+  dateEnd?: Moment,
+  imageUrl?: string,
+  imageDescription?: string,
 }

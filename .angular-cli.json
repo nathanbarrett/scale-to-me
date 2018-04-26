@@ -23,7 +23,9 @@
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.slim.min.js",
-        "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+        "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+        "../node_modules/moment/min/moment.min.js",
+        "../node_modules/fullcalendar/dist/fullcalendar.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

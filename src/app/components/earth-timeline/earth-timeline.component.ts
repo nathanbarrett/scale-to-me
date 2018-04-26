@@ -1,8 +1,24 @@
+/// <reference path="../../../../node_modules/@types/jquery/index" />
+/// <reference path="../../../../node_modules/fullcalendar/dist/fullcalendar" />
+import * as moment from 'moment'
 import { Component, OnInit } from '@angular/core';
-import {} from '@types/googlemaps'
+import { eons } from '../../data/earth-timeline/eons';
+import { CalendarItem } from '../../interfaces/calendar-item';
+import {} from '@types/bootstrap';
 
-import * as Defaults from '../../data/defaults'
-import { MapStyles } from '../../data/google-map-styles'
+interface FullcalendarEvent {
+  title: string,
+  start: moment.Moment,
+  eventInfo: CalendarItem
+  end?: moment.Moment,
+  allDay?: boolean,
+  color?: string,
+  textColor?: string,
+}
+
+interface FullcalendarEventSource {
+  events: FullcalendarEvent[]
+}
 
 @Component({
   selector: 'app-earth-timeline',
@@ -11,77 +27,99 @@ import { MapStyles } from '../../data/google-map-styles'
 })
 export class EarthTimelineComponent implements OnInit {
 
-  map: google.maps.Map
+  secondsPerYear: number
 
-  directionsService: google.maps.DirectionsService
+  earthTimelineStart = eons[0].yearsAgo
 
-  directionsDisplay: google.maps.DirectionsRenderer
+  selectedCalendarItem: CalendarItem
 
-  originAutocomplete: google.maps.places.Autocomplete
-
-  originPlace: google.maps.places.PlaceResult
-
-  destinationAutocomplete: google.maps.places.Autocomplete
-
-  destinationPlace: google.maps.places.PlaceResult
-
-  constructor() { }
+  constructor() {
+    this.secondsPerYear = (60 * 60 * 24 * 365) / this.earthTimelineStart
+  }
 
   ngOnInit() {
-    this.initMap()
-    this.initDrivingServices()
-    this.initAutocompletes()
-  }
-
-  initMap(): void {
-    this.map = new google.maps.Map(document.getElementById('earthTimelineMap'), {
-      center: {lat: Defaults.DEFAULT_LAT, lng: Defaults.DEFAULT_LNG},
-      zoom: 15,
-      styles: MapStyles[Defaults.DEFAULT_MAP_STYLE]
-    })
-  }
-
-  initDrivingServices(): void {
-    this.directionsService = new google.maps.DirectionsService
-    this.directionsDisplay = new google.maps.DirectionsRenderer
-    this.directionsDisplay.setMap(this.map)
-  }
-
-  initAutocompletes(): void {
-    this.originAutocomplete = new google.maps.places.Autocomplete(
-      <HTMLInputElement>document.getElementById('earthTimelineOriginAddress'), {
-        types: ['geocode']
-      })
-    this.originAutocomplete.addListener('place_changed', () => {
-      this.originPlace = this.originAutocomplete.getPlace()
-      this.getDirections()
-    })
-
-    this.destinationAutocomplete = new google.maps.places.Autocomplete(
-      <HTMLInputElement>document.getElementById('earthTimelineDestinationAddress'), {
-        types: ['geocode']
-      })
-    this.destinationAutocomplete.addListener('place_changed', () => {
-      this.destinationPlace = this.destinationAutocomplete.getPlace()
-      this.getDirections()
-    })
-  }
-
-  getDirections(): void {
-    if(!this.originPlace || !this.destinationPlace) {
-      return
-    }
-    this.directionsService.route({
-      origin: this.originPlace.geometry.location,
-      destination: this.destinationPlace.geometry.location,
-      travelMode: google.maps.TravelMode.DRIVING
-    }, (response, status) => {
-      console.log('directions', status, response)
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.directionsDisplay.setDirections(response)
+    $('#earthTimelineCalendar').fullCalendar({
+      eventSources: this.generateEventSources(),
+      editable: false,
+      defaultDate: moment().endOf('year'),
+      defaultView: 'agendaDay',
+      eventClick: (calEvent, jsEvent, view) => {
+        this.selectedCalendarItem = <CalendarItem>calEvent.eventInfo
+        $('#calendarEventModal').modal('show')
       }
-
     })
   }
 
+  eventClick(event: CalendarItem): void {
+
+  }
+
+  generateEventSources(): FullcalendarEventSource[] {
+    let eventSources: FullcalendarEventSource[] = []
+    eventSources.push({
+      events: this.generateEonEvents()
+    })
+    let lightness = null
+    for (let eon of eons) {
+      eventSources.push({
+        events: this.generateEvents(eon.eras, eon.hue, 32,' (Era)')
+      })
+      for (let era of eon.eras){
+        eventSources.push({
+          events: this.generateEvents(era.periods, eon.hue, 48, ' (Period)', false)
+        })
+        for (let period of era.periods) {
+          eventSources.push({
+            events: this.generateEvents(period.epochs, eon.hue,  64, ' (Epoch)', false)
+          })
+          for (let epoch of period.epochs) {
+            eventSources.push({
+              events: this.generateEvents(epoch.ages, eon.hue, 80, ' (Age)', false)
+            })
+          }
+        }
+      }
+    }
+    return eventSources
+  }
+
+  generateEonEvents(): FullcalendarEvent[] {
+    let fullCalendarEvents: FullcalendarEvent[] = []
+    for (let eon of eons) {
+      fullCalendarEvents.push({
+        title: eon.name + ' (Eon)',
+        start: this.getCalendarTimeOfEvent(eon.yearsAgo),
+        end: this.getCalendarTimeOfEvent(eon.yearsAgoEnd),
+        color: `hsl(${eon.hue}, 100%, 16%)`,
+        textColor: 'white',
+        eventInfo: eon
+      })
+    }
+    return fullCalendarEvents
+  }
+
+  generateEvents(
+    events: CalendarItem[],
+    hue: number, lightness: number,
+    nameAppend: string = '',
+    textColorWhite = true
+  ): FullcalendarEvent[] {
+    let fullcalendarEvents: FullcalendarEvent[] = []
+    for (let event of events) {
+      fullcalendarEvents.push({
+        title: event.name + nameAppend,
+        start: this.getCalendarTimeOfEvent(event.yearsAgo),
+        end: this.getCalendarTimeOfEvent(event.yearsAgoEnd),
+        color: `hsl(${hue}, 100%, ${lightness}%)`,
+        textColor: textColorWhite ? 'white' : 'black',
+        eventInfo: event
+      })
+    }
+    return fullcalendarEvents
+  }
+
+  getCalendarTimeOfEvent(yearsAgo: number): moment.Moment {
+    let span = this.earthTimelineStart - yearsAgo
+    return moment().startOf('year').add(span * this.secondsPerYear, 'seconds')
+  }
 }

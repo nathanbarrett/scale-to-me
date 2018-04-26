@@ -1,10 +1,9 @@
+/// <reference path="../../../../node_modules/@types/jquery/index" />
 import { Component, OnInit } from '@angular/core'
 import { DomScriptLoaderService } from '../../services/dom-script-loader.service'
 import { environment } from '../../../environments/environment'
 
 const googleMapsUrl = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsAPIKey}&libraries=places`
-
-declare var $: any
 
 @Component({
   selector: 'app-root',
