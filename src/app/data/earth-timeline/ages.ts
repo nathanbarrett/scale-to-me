@@ -84,7 +84,8 @@ export let PlioceneAges: CalendarItem[] = [
     name: 'Piacenzian',
     description: `The late Piacenzian may be when the genus Homo developed out of the ancestral genus Australopithecus. While the
      oldest known fossils unambiguously identified as Homo habilis date to just after the end of the Piacenzian (2.58 Ma), a fossilized
-     jawbone that exhibits traits that are transitional between Australopithecus and Homo habilis was discovered in the Afar Triangle in 2015.`,
+     jawbone that exhibits traits that are transitional between Australopithecus and Homo habilis was discovered in the Afar Triangle
+     in 2015.`,
     type: CalendarItemType.Age,
     yearsAgo: 3600000,
     yearsAgoEnd: 2588000,

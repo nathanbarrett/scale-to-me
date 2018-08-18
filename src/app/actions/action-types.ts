@@ -1,5 +1,0 @@
-export const UPDATE_CENTER = 'UPDATE_CENTER'
-export const RESET_CENTER = 'RESET_CENTER'
-
-export const UPDATE_BEARING = 'UPDATE_BEARING'
-export const RESET_BEARING = 'RESET_BEARING'
