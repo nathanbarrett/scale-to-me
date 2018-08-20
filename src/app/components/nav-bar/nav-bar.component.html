@@ -1,0 +1,12 @@
+<div id="navBar" class="nav-bar">
+  <div class="nav-bar-content">
+    <div *ngFor="let navItem of navItems" class="nav-item" [attr.id]="navItem.id">
+      <div class="row justify-content-center">
+        <div class="col text-center">
+          <img [src]="navItem.imgUrl" class="nav-item-image" />
+        </div>
+      </div>
+    </div>
+    <div class="nav-bar-arrow" id="navBarArrow"></div>
+  </div>
+</div>

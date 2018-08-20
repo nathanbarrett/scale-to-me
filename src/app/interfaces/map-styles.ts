@@ -1,5 +1,5 @@
-import {} from '@types/googlemaps'
+import {} from '@types/googlemaps';
 
 export interface IMapStyles {
-  [key: string]: google.maps.MapTypeStyle[]
+  [key: string]: google.maps.MapTypeStyle[];
 }

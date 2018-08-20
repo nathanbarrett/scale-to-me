@@ -1,0 +1,63 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.app-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6000px;
+  width: 100%;
+  z-index: 2;
+  background: linear-gradient(to bottom,
+  rgba(0,0,0,0) 0%,
+  rgba(0,0,0,0) 2%,
+  rgba(12, 20, 39, 0.3) 4%,
+  rgba(5, 61, 145, 0.3) 10%,
+  rgba(38, 14, 255, 0.6) 15%,
+  rgba(38, 14, 255, 0.9) 17%,
+  rgba(254, 239, 217, 1) 30%,
+  rgba(158, 126, 20, 1) 60%,
+  rgba(10, 80, 8, 1) 75%,
+  rgba(19, 8, 121, 1) 100%,
+  );
+}
+
+.star-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1200px;
+  z-index: 1;
+}
+
+.app-title-container {
+  padding: 20px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.app-title {
+  font-size: 40px;
+  color: #FFFFFF;
+  font-weight: 300;
+  @include media($lg) {
+    font-size: 80px;
+  }
+}
+
+.app-sub-title {
+  font-size: 11px;
+  color: #FFFFFF;
+  font-weight: 300;
+  @include media($md) {
+    font-size: 15px;
+  }
+  @include media($lg) {
+    font-size: 20px;
+  }
+}
+
+#solarSystemExplainerContainer {
+  margin-top: 100px;
+}

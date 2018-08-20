@@ -1,0 +1,22 @@
+// be sure to update grid.service.ts if you update this
+$sm: 425;
+$md: 900;
+$lg: 1024;
+$xl: 1366;
+$xxl: 1920;
+
+// these overwrite bootstrap grid variables
+$grid-breakpoints: (
+  xs: 0,
+  sm: $sm + 0px,
+  md: $md + 0px,
+  lg: $lg + 0px,
+  xl: $xl + 0px,
+  xxl: $xxl + 0px,
+);
+
+$container-max-widths: (
+  sm: 420px,
+  md: 720px,
+  lg: 960px
+);

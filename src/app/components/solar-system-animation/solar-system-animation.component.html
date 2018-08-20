@@ -1,0 +1,19 @@
+<svg [attr.width]="size" 
+    [attr.height]="size" 
+    [attr.viewBox]="'0 0 ' + size + ' ' + size"
+    xmlns="http://www.w3.org/2000/svg" version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <circle [attr.cx]="size / 2" [attr.cy]="size / 2" [attr.r]="sunSize" fill="yellow"  />
+       <g *ngFor="let planet of planets">
+          <path [attr.d]="generateOrbitPath(planet.orbitRadius)"
+                stroke="none"
+                stroke-width="1"
+                fill="none"
+                [attr.id]="'ssAnimationPath' + planet.name" />
+         <circle cx="0" cy="0" [attr.r]="planet.radius" [attr.fill]="planet.color">
+          <animateMotion [attr.dur]="planet.speed + 's'" repeatCount="indefinite">
+            <mpath [attr.xlink:href]="'#ssAnimationPath' + planet.name"/>
+          </animateMotion>
+         </circle>
+       </g>
+</svg>
