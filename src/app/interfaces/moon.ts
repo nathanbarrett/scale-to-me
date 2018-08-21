@@ -1,5 +1,5 @@
-import { IPlanetaryBody } from './planetary-body'
+import { IPlanetaryBody } from './planetary-body';
 
 export interface IMoon extends IPlanetaryBody {
-  distanceFromPlanet: number
+  distanceFromPlanet: number;
 }

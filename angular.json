@@ -55,16 +55,7 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.local.ts"
                 }
-              ],
-              "optimization": false,
-              "outputHashing": "none",
-              "sourceMap": true,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": false,
-              "vendorChunk": false,
-              "buildOptimizer": true
+              ]
             }
           }
         },
@@ -78,7 +69,7 @@
               "browserTarget": "scale-to-me:build:production"
             },
             "local": {
-              "browserTarget": "scale-to-me:build"
+              "browserTarget": "scale-to-me:build:local"
             }
           }
         },

@@ -1,6 +1,6 @@
-import { ISolarSystem } from '../interfaces/solar-system'
-import { SatelliteTrajectoryType } from '../enums/satellite-trajectory-type.enum'
-import * as moment from 'moment'
+import { ISolarSystem } from '../interfaces/solar-system';
+import { SatelliteTrajectoryType } from '../enums/satellite-trajectory-type.enum';
+import moment from 'moment';
 
 export let SolarSystem: ISolarSystem = {
   scale: 0.00000000938,
@@ -8,7 +8,7 @@ export let SolarSystem: ISolarSystem = {
     name: 'The Sun',
     mapData: {
       marker: null,
-      iconUrl: '/assets/map/map-icon-sun.png',
+      iconUrl: '/assets/map/map-icon-sun-new.png',
       infoWindowContent: `
       It is now about the size of a hot air balloon. Use the address input above to move it all to a location you are more familiar with.
       You can also drag around the Sun's map icon.<br />
@@ -29,7 +29,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Mercury',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-mercury.png',
+        iconUrl: '/assets/map/map-icon-mercury-new.png',
         infoWindowContent: `The smallest and innermost planet is now only {{scaledDiameter}} wide
          and is {{scaledDistance}} from the sun. It's new scaled size is only a little bit bigger than a golf ball.`,
         infoWindow: null,
@@ -43,7 +43,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Venus',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-venus.png',
+        iconUrl: '/assets/map/map-icon-venus-new.png',
         infoWindowContent: `The second brightest natural object in the sky after the moon, Venus is {{scaledDiameter}} in diameter
          which is now about half the size of a soccer ball and sits {{scaledDistance}} from The Sun.`,
         infoWindow: null,
@@ -64,7 +64,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Earth',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-earth.png',
+        iconUrl: '/assets/map/map-icon-earth-new.png',
         infoWindowContent: `Our beautiful <a href="https://www.youtube.com/watch?v=-pvxKdvuwIw" target="_blank">Pale Blue Dot</a> is only a
          little bit larger than Venus. Coming in at {{scaledDiameter}} wide it is about half the size of a soccer ball and is
          {{scaledDistance}} from The Sun.
@@ -86,7 +86,7 @@ export let SolarSystem: ISolarSystem = {
           distanceFromPlanet: 384400000,
           mapData: {
             marker: null,
-            iconUrl: 'assets/map/map-icon-moon.png',
+            iconUrl: 'assets/map/map-icon-moon-new.png',
             infoWindowContent: `Our Moon is now around {{scaledDiameter}} wide which is about half the size of a pool ball. It orbits
             around the Earth from a distance of about {{scaledPlanetDistance}}.`,
             infoWindowImageUrl: 'assets/images/comparisons/moon.png',
@@ -99,7 +99,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Mars',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-mars.png',
+        iconUrl: '/assets/map/map-icon-mars-new.png',
         infoWindowContent: `The fourth planet from the sun is now scaled down to {{scaledDiameter}} wide which is just a little larger
          than a pool ball. It now orbits The Sun at a distance of {{scaledDistance}}.
         `,
@@ -140,7 +140,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Jupiter',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-jupiter.png',
+        iconUrl: '/assets/map/map-icon-jupiter-new.png',
         infoWindowContent: `At {{scaledDiameter}} wide Jupiter is about as tall as an average eight year old child. Jupiter is orbiting
          The Sun from {{scaledDistance}} away.`,
         infoWindow: null,
@@ -918,7 +918,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Saturn',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-saturn.png',
+        iconUrl: '/assets/map/map-icon-saturn-new.png',
         infoWindowContent: `From here Saturn is {{scaledDiameter}} wide which is about as tall as an average five year old child. It orbits
         The Sun from {{scaledDistance}} away.`,
         infoWindow: null,
@@ -1618,7 +1618,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Uranus',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-uranus.png',
+        iconUrl: '/assets/map/map-icon-uranus-new.png',
         infoWindowContent: `At {{scaledDiameter}} wide Uranus is a little more than two soccer balls put together. The distance from here
         to The Sun is {{scaledDistance}}.`,
         infoWindow: null,
@@ -1932,7 +1932,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Neptune',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-neptune.png',
+        iconUrl: '/assets/map/map-icon-neptune-new.png',
         infoWindowContent: `Coming in at {{scaledDiameter}} wide Neptune is a little less than twice the size of a soccer ball. The
          farthest planet from The Sun is now orbiting from a distance of {{scaledDistance}}.`,
         infoWindow: null,
@@ -2105,7 +2105,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Pluto',
       mapData: {
         marker: null,
-        iconUrl: '/assets/map/map-icon-pluto.png',
+        iconUrl: '/assets/map/map-icon-pluto-new.png',
         infoWindowContent: 'Former planet Pluto is now {{scaledDiameter}} wide and orbits The Sun from about {{scaledDistance}} away.',
         infoWindow: null,
         infoWindowImageUrl: '/assets/images/comparisons/pluto.png',
@@ -2123,7 +2123,7 @@ export let SolarSystem: ISolarSystem = {
       name: 'Voyager 1',
       speed: 17260,
       mapData: {
-        iconUrl: '/assets/map/map-icon-voyager-1.png',
+        iconUrl: '/assets/map/map-icon-voyager-1-new.png',
         infoWindow: null,
         infoWindowImageUrl: '/assets/images/voyager1.jpg',
         infoWindowContent: `Voyager 1, launched in September 1977, was one of two satellites sent on a
@@ -2163,4 +2163,4 @@ export let SolarSystem: ISolarSystem = {
       },
     }
   ]
-}
+};

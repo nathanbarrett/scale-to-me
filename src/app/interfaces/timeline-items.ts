@@ -1,19 +1,19 @@
-import { CalendarItem } from './calendar-item'
+import { CalendarItem } from './calendar-item';
 
 export interface Eon extends CalendarItem {
-  hue: number
-  eras: Era[]
+  hue: number;
+  eras: Era[];
 }
 
 export interface Era extends CalendarItem {
-  periods: Period[]
+  periods: Period[];
 }
 
 export interface Period extends CalendarItem {
-  epochs: Epoch[]
+  epochs: Epoch[];
 }
 
 export interface Epoch extends CalendarItem {
-  ages: CalendarItem[]
+  ages: CalendarItem[];
 }
 

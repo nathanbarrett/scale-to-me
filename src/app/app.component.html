@@ -14,6 +14,7 @@
     <div id="solarSystemExplainerContainer">
         <app-solar-system-explainer></app-solar-system-explainer>
     </div>
+    <div id="solarSystemContainer">
+        <app-solar-system [googleMapsLoaded]="googleMapsLoaded"></app-solar-system>
+    </div>
 </div>
-<script [attr.src]="'https://maps.googleapis.com/maps/api/js?key=' + googleApiKey + '&callback=initMap'"
-    async defer></script>

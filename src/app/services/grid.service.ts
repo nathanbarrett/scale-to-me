@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+interface IScrollWatcher {
+  element: HTMLElement;
+  callback: Function;
+  once: boolean;
+  offset?: number;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +20,10 @@ export class GridService {
     xl: 1366,
     xxl: 1920
   };
+
+  private scrollWatchers: IScrollWatcher[];
+
+  private scrollListener: EventListenerOrEventListenerObject;
 
   constructor() {
    }

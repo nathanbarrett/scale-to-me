@@ -1,4 +1,4 @@
-import { IMapStyles } from '../interfaces/map-styles'
+import { IMapStyles } from '../interfaces/map-styles';
 
 
 export let MapStyles: IMapStyles = {
@@ -558,4 +558,4 @@ export let MapStyles: IMapStyles = {
     }
   ],
   standard: null
-}
+};

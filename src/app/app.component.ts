@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import debounce from 'lodash/debounce';
 import { environment } from '../environments/environment';
+import { ScriptsService } from './services/scripts.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,9 @@ export class AppComponent implements OnInit {
 
   starCount = 1500;
 
-  constructor() {}
+  googleMapsLoaded = false;
+
+  constructor(private scriptsService: ScriptsService) {}
 
   ngOnInit() {
     const drawStarsDebounce = debounce(() => {
@@ -19,6 +22,7 @@ export class AppComponent implements OnInit {
     }, 1000);
     window.addEventListener('resize', drawStarsDebounce);
     this.drawStars();
+    this.loadGoogleMaps();
   }
 
   drawStars(): void {
@@ -44,5 +48,13 @@ export class AppComponent implements OnInit {
       container.appendChild(el);
     }
     parent.appendChild(container);
+  }
+
+  loadGoogleMaps(): void {
+    const url = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}`;
+    this.scriptsService.load(url)
+      .then(() => {
+        this.googleMapsLoaded = true;
+      });
   }
 }
