@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { SolarSystemAnimationComponent } from './components/solar-system-animation/solar-system-animation.component';
@@ -16,7 +17,8 @@ import { SolarSystemComponent } from './components/solar-system/solar-system.com
     SolarSystemComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

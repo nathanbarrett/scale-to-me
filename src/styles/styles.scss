@@ -21,3 +21,33 @@ body {
   background-color: #FFFFFF;
   border-radius: 50%;
 }
+
+.info-window-title {
+  font-size: 25px;
+  font-weight: 600;
+  padding: 10px;
+}
+
+.info-window-image {
+  max-width: 400px;
+}
+
+.info-window-content {
+  font-size: 14px;
+  font-weight: 300;
+  margin-top: 10px;
+  line-height: 1.2rem;
+}
+
+.info-window-dyk-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.info-window-dyk-content {
+  font-size: 12px;
+  font-weight: 300;
+  margin-top: 15px;
+  line-height: 1.1rem;
+}

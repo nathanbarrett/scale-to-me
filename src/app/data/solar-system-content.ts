@@ -1,4 +1,4 @@
-import { ISolarSystem } from '../interfaces/solar-system';
+import { ISolarSystem } from '../interfaces/solar-system-old';
 import { SatelliteTrajectoryType } from '../enums/satellite-trajectory-type.enum';
 import moment from 'moment';
 
