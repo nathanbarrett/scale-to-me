@@ -1,5 +1,19 @@
 <div class="row justify-content-center">
   <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+    <div class="map-top-container">
+      <div class="address-input">
+          <div class="input-group">
+            <i class="material-icons location-icon" (click)="getClientLocation()" title="Set to my location (which will not be saved anywhere)">my_location</i>
+            <input type="text" 
+                  class="form-item"   
+                  id="solarSystemAddressInput"
+                  placeholder="Place the sun at a different address" />
+          </div>
+      </div>
+      <div class="rotate-btn" title="Rotate Planets" (click)="rotateMapObjects()">
+        <i class="material-icons">rotate_right</i>
+      </div>
+    </div>
     <div id="solarSystemMap"></div>
   </div>
 </div>

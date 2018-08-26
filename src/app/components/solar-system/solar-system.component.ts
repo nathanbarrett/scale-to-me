@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import scrollMonitor from 'scrollmonitor';
 
 import { SolarSystemService } from '../../services/solar-system.service';
+import { GeolocationService } from '../../services/geolocation.service';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { SolarSystemService } from '../../services/solar-system.service';
   templateUrl: './solar-system.component.html',
   styleUrls: ['./solar-system.component.scss']
 })
-export class SolarSystemComponent implements OnInit, OnChanges {
+export class SolarSystemComponent implements OnInit {
 
   @Input() mapsLoaded: boolean;
 
@@ -19,7 +20,7 @@ export class SolarSystemComponent implements OnInit, OnChanges {
 
   private scrollWatcher: any;
 
-  constructor(private solarSystem: SolarSystemService) { }
+  constructor(private solarSystem: SolarSystemService, private geolocation: GeolocationService) { }
 
   ngOnInit() {
     this.mapElement = document.getElementById('solarSystemMap');
@@ -33,37 +34,41 @@ export class SolarSystemComponent implements OnInit, OnChanges {
     this.scrollWatcher.fullyEnterViewport(() => {
       this.onMapFullyVisible();
     });
-    /*
-    watcher.enterViewport(() => {
-      console.log('element in viewport');
-      // this.solarSystem.initializeMap(this.mapElement);
-    });
-    watcher.fullyEnterViewport(() => {
-      console.log('element entirely in viewport');
-      // this.solarSystem.placeMapObjects();
-    });
-    */
   }
 
   onMapElementVisible() {
-    console.log('map element visible in viewport');
     if (this.solarSystem.map) {
       return;
     }
     this.solarSystem.initializeMap(this.mapElement);
+    const addressInput = <HTMLInputElement>document.getElementById('solarSystemAddressInput');
+    this.geolocation.bindAutcompleteToInput(addressInput, (latitude: number, longitude: number) => {
+      this.placeChanged(latitude, longitude);
+    });
   }
 
   onMapFullyVisible() {
-    console.log('map fully visible');
-    // TODO initializeMap above is in an async observable so make the below async and fire only
-    // after map init
-    // this.solarSystem.placeMapObjects();
+    this.solarSystem.placeMapObjects();
+    setTimeout(() => {
+      this.solarSystem.showSunInfoWindow();
+    }, 1500);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.mapsLoaded.currentValue && this.mapInView) {
-
+  getClientLocation() {
+    if(!navigator.geolocation) {
+      return;
     }
+    navigator.geolocation.getCurrentPosition(position => {
+      this.solarSystem.moveCenter(position.coords.latitude, position.coords.longitude);
+    });
+  }
+
+  rotateMapObjects() {
+    this.solarSystem.rotateMapObjects();
+  }
+
+  placeChanged(latitude: number, longitude: number) {
+    this.solarSystem.moveCenter(latitude, longitude);
   }
 
 }

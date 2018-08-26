@@ -38,7 +38,7 @@ export class ScriptsService {
     if (typeof google !== 'undefined') {
       throw new Error('Maps library already loaded!');
     }
-    const url = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places`;
     return this.load(url);
   }
 }
