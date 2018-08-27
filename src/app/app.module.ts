@@ -7,6 +7,8 @@ import { SolarSystemAnimationComponent } from './components/solar-system-animati
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { SolarSystemExplainerComponent } from './components/solar-system-explainer/solar-system-explainer.component';
 import { SolarSystemComponent } from './components/solar-system/solar-system.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { SolarSystemComponent } from './components/solar-system/solar-system.com
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

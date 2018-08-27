@@ -3,6 +3,7 @@ import scrollMonitor from 'scrollmonitor';
 
 import { SolarSystemService } from '../../services/solar-system.service';
 import { GeolocationService } from '../../services/geolocation.service';
+import { MatRadioChange } from '@angular/material/radio';
 
 
 @Component({
@@ -55,12 +56,20 @@ export class SolarSystemComponent implements OnInit {
   }
 
   getClientLocation() {
-    if(!navigator.geolocation) {
+    if (!navigator.geolocation) {
       return;
     }
     navigator.geolocation.getCurrentPosition(position => {
       this.solarSystem.moveCenter(position.coords.latitude, position.coords.longitude);
     });
+  }
+
+  isUnitSystemMetric(): boolean {
+    return this.solarSystem.isUnitSystemMetric();
+  }
+
+  setUnitSystemMetric(change: MatRadioChange): void {
+    this.solarSystem.setUnitSystemMetric(change.value);
   }
 
   rotateMapObjects() {
@@ -69,6 +78,10 @@ export class SolarSystemComponent implements OnInit {
 
   placeChanged(latitude: number, longitude: number) {
     this.solarSystem.moveCenter(latitude, longitude);
+  }
+
+  startLightbeam() {
+    
   }
 
 }

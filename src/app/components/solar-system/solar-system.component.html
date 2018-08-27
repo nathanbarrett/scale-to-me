@@ -14,6 +14,15 @@
         <i class="material-icons">rotate_right</i>
       </div>
     </div>
-    <div id="solarSystemMap"></div>
+    <div class="map-container">
+        <div id="solarSystemMap"></div>
+        <div class="light-beam-btn">Start A Lightbeam</div>
+    </div>
+    <div class="map-bottom-container">
+      <mat-radio-group name="solarSystemUnits" [value]="isUnitSystemMetric()" (change)="setUnitSystemMetric($event)">
+        <mat-radio-button [value]="true">Metric</mat-radio-button>
+        <mat-radio-button [value]="false" style="margin-left: 15px;">Freedom Units</mat-radio-button>
+      </mat-radio-group>
+    </div>
   </div>
 </div>

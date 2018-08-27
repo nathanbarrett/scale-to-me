@@ -1,3 +1,29 @@
+.map-container {
+  position: relative;
+}
+
+.light-beam-btn {
+  cursor: pointer;
+  position: absolute;
+  left: 5px;
+  bottom: 30px;
+  background-color: #FFFFFF;
+  border-radius: 0;
+  color: #000000;
+  width: 220px;
+  height: 35px;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    background-color: lightblue;
+  }
+  &:active {
+    background-color: lightseagreen;
+  }
+}
+
 #solarSystemMap {
   height: 700px;
 }

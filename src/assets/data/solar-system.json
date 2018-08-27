@@ -1,5 +1,6 @@
 {
   "scale": 0.00000000938,
+  "speedOfLight": 299792458,
   "sun": {
     "name": "The Sun",
     "mapData": {

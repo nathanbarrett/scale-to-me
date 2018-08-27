@@ -50,6 +50,7 @@ export interface IInfoBody {
 
 export interface ISystem {
   scale: number;
+  speedOfLight: number;
   sun: IPlanetaryBody;
   planets: IPlanetaryBody[];
   dwarfPlanets: IPlanetaryBody[];

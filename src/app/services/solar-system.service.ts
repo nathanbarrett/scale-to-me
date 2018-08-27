@@ -6,12 +6,19 @@ import { Observable, forkJoin, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import * as geolib from 'geolib';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
 import { ScriptsService } from '../services/scripts.service';
 import * as SolarSystem from '../interfaces/solar-system';
 import * as defaults from '../data/defaults';
 import { Bearing } from '../enums/bearing.enum';
+
+interface Lightbeam {
+  line: google.maps.Polyline;
+  path: google.maps.MVCArray<google.maps.LatLng>;
+  start: Moment;
+  running: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +45,8 @@ export class SolarSystemService {
 
   private unitSystemMetric = true;
 
+  private lightbeam: Lightbeam;
+
   constructor(private http: HttpClient, private scripts: ScriptsService) { }
 
   initializeMap(mapElement: HTMLElement): void {
@@ -59,7 +68,13 @@ export class SolarSystemService {
   }
 
   private createMapObjects(): void {
-    this.solarSystem.sun.mapData.marker = this.createMapObjectMarker(this.solarSystem.sun);
+    this.solarSystem.sun.mapData.marker = this.createMapObjectMarker(this.solarSystem.sun, {
+      position: this.center,
+      draggable: true
+    });
+    this.solarSystem.sun.mapData.marker.addListener('dragend', (event: google.maps.MouseEvent) => {
+      this.moveCenter(event.latLng.lat(), event.latLng.lng());
+    });
     this.solarSystem.sun.mapData.infoWindow = this.createMapObjectInfoWindow(this.solarSystem.sun);
     const planetTypes = ['planets', 'dwarfPlanets'];
     for (const planetType of planetTypes) {
@@ -148,6 +163,7 @@ export class SolarSystemService {
     if (this.unitSystemMetric === setToMetric) {
       return;
     }
+    this.unitSystemMetric = setToMetric;
     this.solarSystem.sun.mapData.infoWindow.setContent(
       this.createInfoWindowContent(this.solarSystem.sun)
     );
@@ -163,6 +179,14 @@ export class SolarSystemService {
         this.createInfoWindowContent(satellite)
       );
     });
+  }
+
+  isUnitSystemMetric(): boolean {
+    return this.unitSystemMetric;
+  }
+
+  startLightbeam(): void {
+
   }
 
   private parseDynamicContent(object: SolarSystem.IMapObject, content: string): string {
@@ -216,7 +240,9 @@ export class SolarSystemService {
     return Math.round(number * multiplier) / multiplier;
   }
 
-  private createMapObjectMarker(mapObject: SolarSystem.IMapObject): google.maps.Marker {
+  private createMapObjectMarker(
+    mapObject: SolarSystem.IMapObject,
+    markerOptions: google.maps.MarkerOptions = {position: this.center}): google.maps.Marker {
     return new google.maps.Marker({
       map: null,
       icon: {
@@ -225,9 +251,9 @@ export class SolarSystemService {
         anchor: new google.maps.Point(25, 85),
         origin: new google.maps.Point(0, 0)
       },
-      position: this.center,
       animation: google.maps.Animation.DROP,
-      title: mapObject.name
+      title: mapObject.name,
+      ...markerOptions
     });
   }
 
