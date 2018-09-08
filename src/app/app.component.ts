@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import debounce from 'lodash/debounce';
-import { environment } from '../environments/environment';
 import { ScriptsService } from './services/scripts.service';
 
 @Component({
@@ -15,6 +14,7 @@ export class AppComponent implements OnInit {
   constructor(private scriptsService: ScriptsService) {}
 
   ngOnInit() {
+    // TODO refactor this to an observable
     const drawStarsDebounce = debounce(() => {
       this.drawStars();
     }, 1000);

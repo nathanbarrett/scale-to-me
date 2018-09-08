@@ -2,23 +2,16 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, Subscription } from 'rxjs';
+import { Observable, forkJoin, interval } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import * as geolib from 'geolib';
-import moment, { Moment } from 'moment';
+import * as moment from 'moment';
 
 import { ScriptsService } from '../services/scripts.service';
-import * as SolarSystem from '../interfaces/solar-system';
+import { ISolarSystem, ILightbeam, IPlanet, IPlanetaryBody, ISatellite, IMapObject } from '../interfaces/solar-system';
 import * as defaults from '../data/defaults';
 import { Bearing } from '../enums/bearing.enum';
-
-interface Lightbeam {
-  line: google.maps.Polyline;
-  path: google.maps.MVCArray<google.maps.LatLng>;
-  start: Moment;
-  running: boolean;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +20,7 @@ export class SolarSystemService {
 
   map: google.maps.Map;
 
-  private solarSystem: SolarSystem.ISystem;
+  private solarSystem: ISolarSystem;
 
   private mapOptions: google.maps.MapOptions = {
     center: {lat: defaults.DEFAULT_LAT, lng: defaults.DEFAULT_LNG},
@@ -45,7 +38,7 @@ export class SolarSystemService {
 
   private unitSystemMetric = true;
 
-  private lightbeam: Lightbeam;
+  private lightbeam: ILightbeam;
 
   constructor(private http: HttpClient, private scripts: ScriptsService) { }
 
@@ -58,6 +51,11 @@ export class SolarSystemService {
     ).subscribe(data => {
       this.center = new google.maps.LatLng(defaults.DEFAULT_LAT, defaults.DEFAULT_LNG);
       this.map = new google.maps.Map(mapElement, this.mapOptions);
+      for (const event of ['zoom_changed', 'dragstart', 'click']) {
+        this.map.addListener(event, () => {
+          this.disableLightBeamTracking();
+        });
+      }
       this.solarSystem = data[1];
       this.createMapObjects();
     });
@@ -78,7 +76,7 @@ export class SolarSystemService {
     this.solarSystem.sun.mapData.infoWindow = this.createMapObjectInfoWindow(this.solarSystem.sun);
     const planetTypes = ['planets', 'dwarfPlanets'];
     for (const planetType of planetTypes) {
-      this.solarSystem[planetType].forEach((planet: SolarSystem.IPlanet) => {
+      this.solarSystem[planetType].forEach((planet: IPlanet) => {
         planet.mapData.marker = this.createMapObjectMarker(planet);
         planet.mapData.infoWindow = this.createMapObjectInfoWindow(planet);
       });
@@ -89,8 +87,6 @@ export class SolarSystemService {
     });
   }
 
-  /** Put in either a new center or new bearing or both to update the placement of all map objects.
-   * Otherwise will use default center and bearing. */
   placeMapObjects(): void {
     if (!this.solarSystem || !this.solarSystem.sun) {
       if (this.mapDataFetchChecks > 20) {
@@ -108,7 +104,7 @@ export class SolarSystemService {
       this.solarSystem.sun.mapData.marker.setMap(this.map);
     }
     for (const planetType of ['planets', 'dwarfPlanets']) {
-      this.solarSystem[planetType].forEach((planet: SolarSystem.IPlanet) => {
+      this.solarSystem[planetType].forEach((planet: IPlanet) => {
         planet.mapData.marker.setPosition(
           this.calculatePlanetCoordinates(planet, this.center, this.bearing)
         );
@@ -148,6 +144,9 @@ export class SolarSystemService {
     bearingOrder[0] :
     bearingOrder[bearingOrder.indexOf(this.bearing) + 1];
     this.placeMapObjects();
+    if (this.isLightbeamRunning()) {
+      this.updateLightbeamPosition(true);
+    }
     return this.bearing;
   }
 
@@ -155,20 +154,24 @@ export class SolarSystemService {
   moveCenter(latitude: number, longitude: number): void {
     this.center = new google.maps.LatLng(latitude, longitude);
     this.placeMapObjects();
+    this.updateLightbeamPosition(true);
     this.map.setCenter(this.center);
     this.map.setZoom(defaults.DEFAULT_MAP_ZOOM);
   }
 
-  setUnitSystemMetric(setToMetric: boolean): void {
-    if (this.unitSystemMetric === setToMetric) {
+  setUnitSystem(metric: boolean): void {
+    if (this.unitSystemMetric === metric) {
       return;
     }
-    this.unitSystemMetric = setToMetric;
+    this.unitSystemMetric = metric;
+    if (this.lightbeam) {
+      this.lightbeam.infoWindow.setContent(this.generateLightBeamInfoWindowContent());
+    }
     this.solarSystem.sun.mapData.infoWindow.setContent(
       this.createInfoWindowContent(this.solarSystem.sun)
     );
     for (const planetType of ['planets', 'dwarfPlanets']) {
-      this.solarSystem[planetType].forEach((planet: SolarSystem.IPlanet) => {
+      this.solarSystem[planetType].forEach((planet: IPlanet) => {
         planet.mapData.infoWindow.setContent(
           this.createInfoWindowContent(planet)
         );
@@ -186,18 +189,112 @@ export class SolarSystemService {
   }
 
   startLightbeam(): void {
-
+    this.map.setCenter(this.solarSystem.sun.mapData.marker.getPosition());
+    this.map.setZoom(17);
+    this.lightbeam = {
+      line: new google.maps.Polyline({
+        map: this.map,
+        path: new google.maps.MVCArray([this.center]),
+        strokeColor: 'yellow',
+        strokeWeight: 15,
+        strokeOpacity: 0.7,
+      }),
+      start: moment().subtract(5, 'seconds'),
+      interval: interval(1000).subscribe(() => {
+        this.updateLightbeamPosition();
+      }),
+      infoWindow: new google.maps.InfoWindow({
+        content: this.generateLightBeamInfoWindowContent(),
+        disableAutoPan: true
+      }),
+      tracking: true
+    };
+    this.closeAllInfoWindows();
+    this.lightbeam.infoWindow.open(this.map);
+    this.lightbeam.infoWindow.setPosition(this.center);
   }
 
-  private parseDynamicContent(object: SolarSystem.IMapObject, content: string): string {
+  stopLightbeam(): void {
+    this.lightbeam.interval.unsubscribe();
+    this.lightbeam.start = null;
+    this.lightbeam.line.setMap(null);
+    this.lightbeam.infoWindow.close();
+  }
+
+  isLightbeamRunning(): boolean {
+    return this.lightbeam && this.lightbeam.start !== null;
+  }
+
+  private updateLightbeamPosition(refresh: boolean = false): void {
+    const scaledSpeedOfLight = this.solarSystem.speedOfLight * this.solarSystem.scale;
+    const secondsElapsed = moment().diff(this.lightbeam.start, 'seconds');
+    const metersTraveled = scaledSpeedOfLight * secondsElapsed;
+    const point = geolib.computeDestinationPoint({
+      latitude: this.center.lat(),
+      longitude: this.center.lng()
+    }, metersTraveled, this.bearing);
+    const path = refresh ? new google.maps.MVCArray([this.center]) : this.lightbeam.line.getPath();
+    const latLng = new google.maps.LatLng(point.latitude, point.longitude);
+    path.push(latLng);
+    this.lightbeam.line.setPath(path);
+    if (this.lightbeam.tracking) {
+      this.map.setCenter(latLng);
+    }
+    this.lightbeam.infoWindow.setPosition(latLng);
+  }
+
+  private disableLightBeamTracking(): void {
+    if (this.lightbeam) {
+      this.lightbeam.tracking = false;
+    }
+  }
+
+  private generateLightBeamInfoWindowContent(): string {
+    // in meters per hour
+    const scaledSpeedOfLight = this.solarSystem.speedOfLight * this.solarSystem.scale * 3600;
+    const fastestObjectSpeed = 265000000;
+    const scaledFastestObjectSpeed = fastestObjectSpeed * this.solarSystem.scale;
+
+    const speedOfLightText = this.unitSystemMetric ?
+      Math.round(this.solarSystem.speedOfLight / 1000) + ' kilometers per second' :
+      Math.round(geolib.convertUnit('mi', this.solarSystem.speedOfLight)) + ' miles per second';
+    const scaledSpeedOfLightText = this.unitSystemMetric ?
+      (Math.round(scaledSpeedOfLight / 10) / 100) + ' km/h' :
+      (Math.round(geolib.convertUnit('mi', scaledSpeedOfLight) * 100) / 100) + ' mph';
+    const fastestObjectSpeedText = this.unitSystemMetric ?
+      '265,000 km/h' : '165,000 mph';
+    const scaledFastestObjectSpeedText = this.unitSystemMetric ?
+      (Math.round(scaledFastestObjectSpeed * 100) / 100) + ' meters per hour' :
+      (Math.round(geolib.convertUnit('ft', scaledFastestObjectSpeed) * 100) / 100) + ' feet per hour';
+    const speedOfLightDiffText = (Math.round(fastestObjectSpeed / (this.solarSystem.speedOfLight * 3600) * 100000) / 1000) + '%';
+    return `
+    <div class="text-center">
+      <div class="info-window-title">The Speed Of Light</div>
+    </div>
+    <div class="info-window-content">
+      Seems a little slow, doesn't it? From our perspective the speed of light seems
+      instantanious ( ${speedOfLightText} ), but compared to the vastness of Space it is not. If the speed of
+      light scaled down by the same amount as everything else here then we are looking at
+      a light beam traveling at only ${scaledSpeedOfLightText} which is about the speed of a fast jog.
+    </div>
+    <div class="info-window-dyk-title">Did you know?</div>
+    <div class="info-window-dyk-content">
+      The fastest man made object (in terms of heliocentric velocity) was NASA's Helios I probe
+      launched in 1974. The top speed was ${fastestObjectSpeedText} which is only ${speedOfLightDiffText}
+      of the speed of light. Or in this scenario ${scaledFastestObjectSpeedText}
+    </div>
+    `;
+  }
+
+  private parseDynamicContent(object: IMapObject, content: string): string {
     content = this.parseScaledDistance(object, content);
     if (object['radius']) {
-      content = this.parseScaledSize(<SolarSystem.IPlanetaryBody>object, content);
+      content = this.parseScaledSize(<IPlanetaryBody>object, content);
     }
     return content;
   }
 
-  private parseScaledDistance(object: SolarSystem.IMapObject, content: string): string {
+  private parseScaledDistance(object: IMapObject, content: string): string {
     // scaled distance in meters
     let scaledDistance = object.distanceFromSun * this.solarSystem.scale;
     const replaceString = '{{scaledDistance}}';
@@ -220,7 +317,7 @@ export class SolarSystemService {
     return content.replace(replaceString, this.round(scaledDistance) + ' feet');
   }
 
-  private parseScaledSize(object: SolarSystem.IPlanetaryBody, content: string): string {
+  private parseScaledSize(object: IPlanetaryBody, content: string): string {
     // scaled down diameter in meters
     let scaledDiameter =  object.radius * this.solarSystem.scale * 2;
     const replaceString = '{{scaledDiameter}}';
@@ -241,7 +338,7 @@ export class SolarSystemService {
   }
 
   private createMapObjectMarker(
-    mapObject: SolarSystem.IMapObject,
+    mapObject: IMapObject,
     markerOptions: google.maps.MarkerOptions = {position: this.center}): google.maps.Marker {
     return new google.maps.Marker({
       map: null,
@@ -257,7 +354,7 @@ export class SolarSystemService {
     });
   }
 
-  private createMapObjectInfoWindow(mapObject: SolarSystem.IMapObject | SolarSystem.IPlanetaryBody): google.maps.InfoWindow {
+  private createMapObjectInfoWindow(mapObject: IMapObject |  IPlanetaryBody): google.maps.InfoWindow {
     const infoWindow = new google.maps.InfoWindow({content: '', maxWidth: 500});
     if (!mapObject.mapData.infoWindowContent) {
       return infoWindow;
@@ -273,6 +370,9 @@ export class SolarSystemService {
           return;
         }
         this.closeAllInfoWindows();
+        if (this.lightbeam && this.lightbeam.start) {
+          this.lightbeam.tracking = false;
+        }
         mapObject.mapData.infoWindow.open(this.map, mapObject.mapData.marker);
         mapObject.mapData.isInfoWindowOpen = true;
       });
@@ -280,7 +380,7 @@ export class SolarSystemService {
     return infoWindow;
   }
 
-  private createInfoWindowContent(mapObject: SolarSystem.IMapObject): string {
+  private createInfoWindowContent(mapObject: IMapObject): string {
     let content = `
       <div class="text-center">
         <div class="info-window-title">${mapObject.name}</div>
@@ -302,16 +402,19 @@ export class SolarSystemService {
     this.solarSystem.sun.mapData.isInfoWindowOpen = false;
     const mapObjectTypes = ['planets', 'dwarfPlanets', 'satellites'];
     for (const mapObjectType of mapObjectTypes) {
-      this.solarSystem[mapObjectType].forEach((mapObject: SolarSystem.IMapObject) => {
+      this.solarSystem[mapObjectType].forEach((mapObject: IMapObject) => {
         if (mapObject.mapData.isInfoWindowOpen) {
           mapObject.mapData.infoWindow.close();
           mapObject.mapData.isInfoWindowOpen = false;
         }
       });
     }
+    if (this.lightbeam) {
+      this.lightbeam.infoWindow.close();
+    }
   }
 
-  private calculatePlanetCoordinates(planet: SolarSystem.IPlanet, center: google.maps.LatLng, bearing: Bearing): google.maps.LatLng {
+  private calculatePlanetCoordinates(planet: IPlanet, center: google.maps.LatLng, bearing: Bearing): google.maps.LatLng {
     const scaledDistance = planet.distanceFromSun * this.solarSystem.scale;
     const startPoint = {
       latitude: center.lat(),
@@ -322,7 +425,7 @@ export class SolarSystemService {
   }
 
   private calculateSatelliteCoordinates(
-    satellite: SolarSystem.ISatellite,
+    satellite: ISatellite,
     center: google.maps.LatLng,
     bearing: Bearing
   ): google.maps.LatLng {

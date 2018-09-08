@@ -4,6 +4,8 @@ import scrollMonitor from 'scrollmonitor';
 import { SolarSystemService } from '../../services/solar-system.service';
 import { GeolocationService } from '../../services/geolocation.service';
 import { MatRadioChange } from '@angular/material/radio';
+import { MatDialog } from '@angular/material';
+import { ProximaCentauriComponent } from '../proxima-centauri/proxima-centauri.component';
 
 
 @Component({
@@ -15,13 +17,13 @@ export class SolarSystemComponent implements OnInit {
 
   @Input() mapsLoaded: boolean;
 
-  private mapInView = false;
+  private mapElementsPlaced = false;
 
   private mapElement: HTMLElement;
 
   private scrollWatcher: any;
 
-  constructor(private solarSystem: SolarSystemService, private geolocation: GeolocationService) { }
+  constructor(private solarSystem: SolarSystemService, private geolocation: GeolocationService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.mapElement = document.getElementById('solarSystemMap');
@@ -49,10 +51,14 @@ export class SolarSystemComponent implements OnInit {
   }
 
   onMapFullyVisible() {
+    if (this.mapElementsPlaced) {
+      return;
+    }
     this.solarSystem.placeMapObjects();
     setTimeout(() => {
       this.solarSystem.showSunInfoWindow();
     }, 1500);
+    this.mapElementsPlaced = true;
   }
 
   getClientLocation() {
@@ -69,7 +75,7 @@ export class SolarSystemComponent implements OnInit {
   }
 
   setUnitSystemMetric(change: MatRadioChange): void {
-    this.solarSystem.setUnitSystemMetric(change.value);
+    this.solarSystem.setUnitSystem(change.value);
   }
 
   rotateMapObjects() {
@@ -80,8 +86,20 @@ export class SolarSystemComponent implements OnInit {
     this.solarSystem.moveCenter(latitude, longitude);
   }
 
-  startLightbeam() {
-    
+  toggleLightbeam() {
+    if (this.solarSystem.isLightbeamRunning()) {
+      return this.solarSystem.stopLightbeam();
+    }
+    this.solarSystem.startLightbeam();
   }
 
+  isLightbeamRunning(): boolean {
+    return this.solarSystem.isLightbeamRunning();
+  }
+
+  showProximaCentauriDialog(): void {
+    this.dialog.open(ProximaCentauriComponent, {
+      closeOnNavigation: true
+    });
+  }
 }

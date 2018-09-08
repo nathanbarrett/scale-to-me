@@ -1,4 +1,6 @@
 /// <reference types="@types/googlemaps" />
+import { Moment } from 'moment';
+import { Subscription } from 'rxjs';
 
 export interface IMapData {
   iconUrl: string;
@@ -48,7 +50,15 @@ export interface IInfoBody {
   mapData: IMapData;
 }
 
-export interface ISystem {
+export interface ILightbeam {
+  line: google.maps.Polyline;
+  start: Moment;
+  interval: Subscription;
+  infoWindow: google.maps.InfoWindow;
+  tracking: boolean;
+}
+
+export interface ISolarSystem {
   scale: number;
   speedOfLight: number;
   sun: IPlanetaryBody;

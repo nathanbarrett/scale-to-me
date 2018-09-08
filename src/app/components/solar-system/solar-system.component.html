@@ -3,20 +3,27 @@
     <div class="map-top-container">
       <div class="address-input">
           <div class="input-group">
-            <i class="material-icons location-icon" (click)="getClientLocation()" title="Set to my location (which will not be saved anywhere)">my_location</i>
+            <i class="material-icons location-icon" (click)="getClientLocation()" matTooltip="center to me">my_location</i>
             <input type="text" 
                   class="form-item"   
                   id="solarSystemAddressInput"
                   placeholder="Place the sun at a different address" />
           </div>
       </div>
-      <div class="rotate-btn" title="Rotate Planets" (click)="rotateMapObjects()">
+      <div class="rotate-btn" matTooltip="rotate" (click)="rotateMapObjects()">
         <i class="material-icons">rotate_right</i>
       </div>
     </div>
     <div class="map-container">
         <div id="solarSystemMap"></div>
-        <div class="light-beam-btn">Start A Lightbeam</div>
+        <button class="alpha-centauri-btn" mat-raised-button (click)="showProximaCentauriDialog()">
+          <i class="material-icons">brightness_5</i>&nbsp;
+          Proxima Centauri
+        </button>
+        <button class="light-beam-btn" mat-raised-button (click)="toggleLightbeam()">
+            <i class="material-icons">waves</i>&nbsp;
+            {{ isLightbeamRunning() ? 'Stop Lightbeam' : 'Start A Lightbeam' }}
+        </button>
     </div>
     <div class="map-bottom-container">
       <mat-radio-group name="solarSystemUnits" [value]="isUnitSystemMetric()" (change)="setUnitSystemMetric($event)">
