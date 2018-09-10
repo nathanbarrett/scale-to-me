@@ -10,13 +10,16 @@
                   placeholder="Place the sun at a different address" />
           </div>
       </div>
+      <div class="map-objects-btn" matTooltip="go to a map item" (click)="showMapItemsDialog()">
+          <i class="material-icons">place</i>
+        </div>
       <div class="rotate-btn" matTooltip="rotate" (click)="rotateMapObjects()">
         <i class="material-icons">rotate_right</i>
       </div>
     </div>
     <div class="map-container">
         <div id="solarSystemMap"></div>
-        <button class="alpha-centauri-btn" mat-raised-button (click)="showProximaCentauriDialog()">
+        <button class="proxima-centauri-btn" mat-raised-button (click)="showProximaCentauriDialog()">
           <i class="material-icons">brightness_5</i>&nbsp;
           Proxima Centauri
         </button>

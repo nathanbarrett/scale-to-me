@@ -9,7 +9,14 @@ import * as geolib from 'geolib';
 import * as moment from 'moment';
 
 import { ScriptsService } from '../services/scripts.service';
-import { ISolarSystem, ILightbeam, IPlanet, IPlanetaryBody, ISatellite, IMapObject } from '../interfaces/solar-system';
+import {
+  ISolarSystem,
+  ILightbeam,
+  IPlanet,
+  IPlanetaryBody,
+  ISatellite,
+  IMapObject,
+  ISolarSystemListItem } from '../interfaces/solar-system';
 import * as defaults from '../data/defaults';
 import { Bearing } from '../enums/bearing.enum';
 
@@ -225,6 +232,48 @@ export class SolarSystemService {
     return this.lightbeam && this.lightbeam.start !== null;
   }
 
+  getMapObjectsList(): ISolarSystemListItem[] {
+    const listItems: ISolarSystemListItem[] = [
+      {
+        name: 'The Sun',
+        image: '/assets/images/sun-list.png'
+      }
+    ];
+    for (const planetType of ['planets', 'dwarfPlanets']) {
+      this.solarSystem[planetType].forEach((planet: IPlanetaryBody) => {
+        listItems.push({
+          name: planet.name,
+          image: `/assets/images/${planet.name.toLowerCase()}-list.png`
+        });
+      });
+    }
+    listItems.push({
+      name: 'Voyager 1',
+      image: '/assets/images/voyager-1-list.png'
+    });
+    return listItems;
+  }
+
+  jumpToMapObject(name: string): void {
+    if (name === 'Sun') {
+      this.map.setCenter(this.solarSystem.sun.mapData.marker.getPosition());
+      this.map.setZoom(defaults.DEFAULT_MAP_ZOOM);
+      this.solarSystem.sun.mapData.infoWindow.open(this.map, this.solarSystem.sun.mapData.marker);
+      return;
+    }
+    for (const mapObjectType of ['planets', 'dwarfPlanets', 'satellites']) {
+      for (const mapObject of this.solarSystem[mapObjectType]) {
+        if (mapObject.name === name) {
+          this.map.setCenter(mapObject.mapData.marker.getPosition());
+          this.map.setZoom(defaults.DEFAULT_MAP_ZOOM);
+          this.closeAllInfoWindows();
+          mapObject.mapData.infoWindow.open(this.map, mapObject.mapData.marker);
+          return;
+        }
+      }
+    }
+  }
+
   private updateLightbeamPosition(refresh: boolean = false): void {
     const scaledSpeedOfLight = this.solarSystem.speedOfLight * this.solarSystem.scale;
     const secondsElapsed = moment().diff(this.lightbeam.start, 'seconds');
@@ -399,14 +448,10 @@ export class SolarSystemService {
 
   private closeAllInfoWindows(): void {
     this.solarSystem.sun.mapData.infoWindow.close();
-    this.solarSystem.sun.mapData.isInfoWindowOpen = false;
     const mapObjectTypes = ['planets', 'dwarfPlanets', 'satellites'];
     for (const mapObjectType of mapObjectTypes) {
       this.solarSystem[mapObjectType].forEach((mapObject: IMapObject) => {
-        if (mapObject.mapData.isInfoWindowOpen) {
-          mapObject.mapData.infoWindow.close();
-          mapObject.mapData.isInfoWindowOpen = false;
-        }
+        mapObject.mapData.infoWindow.close();
       });
     }
     if (this.lightbeam) {

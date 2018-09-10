@@ -6,6 +6,7 @@ import { GeolocationService } from '../../services/geolocation.service';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatDialog } from '@angular/material';
 import { ProximaCentauriComponent } from '../proxima-centauri/proxima-centauri.component';
+import { SolarSystemSelectComponent } from '../solar-system-select/solar-system-select.component';
 
 
 @Component({
@@ -100,6 +101,18 @@ export class SolarSystemComponent implements OnInit {
   showProximaCentauriDialog(): void {
     this.dialog.open(ProximaCentauriComponent, {
       closeOnNavigation: true
+    });
+  }
+
+  showMapItemsDialog(): void {
+    const mapItemsDialogRef = this.dialog.open(SolarSystemSelectComponent, {
+      data: {
+        mapItems: this.solarSystem.getMapObjectsList()
+      }
+    });
+
+    mapItemsDialogRef.afterClosed().subscribe((mapObjectName: string) => {
+      this.solarSystem.jumpToMapObject(mapObjectName);
     });
   }
 }

@@ -84,7 +84,6 @@ export class SolarSystemAnimationComponent implements OnInit {
     this.planets = this.planets.map(planet => {
       planet.radius = this.size * (planet.radius / 100);
       planet.orbitRadius = this.size * (planet.orbitRadius / 100);
-      // TODO create speed scaling
       return {...planet};
     });
 

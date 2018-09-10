@@ -67,3 +67,12 @@ export interface ISolarSystem {
   satellites: ISatellite[];
   infoBodies: IInfoBody[];
 }
+
+export interface ISolarSystemListItem {
+  name: string;
+  image: string;
+}
+
+export interface ISolarSystemSelectData {
+  mapItems: ISolarSystemListItem[];
+}

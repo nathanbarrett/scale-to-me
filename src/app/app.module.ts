@@ -8,8 +8,9 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { SolarSystemExplainerComponent } from './components/solar-system-explainer/solar-system-explainer.component';
 import { SolarSystemComponent } from './components/solar-system/solar-system.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatRadioModule, MatButtonModule, MatTooltipModule, MatDialogModule } from '@angular/material';
+import { MatRadioModule, MatButtonModule, MatTooltipModule, MatDialogModule, MatListModule } from '@angular/material';
 import { ProximaCentauriComponent } from './components/proxima-centauri/proxima-centauri.component';
+import { SolarSystemSelectComponent } from './components/solar-system-select/solar-system-select.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ProximaCentauriComponent } from './components/proxima-centauri/proxima-
     NavBarComponent,
     SolarSystemExplainerComponent,
     SolarSystemComponent,
-    ProximaCentauriComponent
+    ProximaCentauriComponent,
+    SolarSystemSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -27,10 +29,14 @@ import { ProximaCentauriComponent } from './components/proxima-centauri/proxima-
     MatRadioModule,
     MatButtonModule,
     MatTooltipModule,
-    MatDialogModule
+    MatDialogModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [ProximaCentauriComponent]
+  entryComponents: [
+    ProximaCentauriComponent,
+    SolarSystemSelectComponent
+  ]
 })
 export class AppModule { }

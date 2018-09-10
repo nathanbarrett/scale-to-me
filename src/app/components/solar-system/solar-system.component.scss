@@ -8,7 +8,7 @@
   bottom: 30px;
 }
 
-.alpha-centauri-btn {
+.proxima-centauri-btn {
   position: absolute;
   left: 5px;
   bottom: 80px;
@@ -36,6 +36,19 @@ div.address-input {
 }
 
 div.map-top-container > .rotate-btn {
+  flex-shrink: 1;
+  min-width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  &:active {
+    color: rgb(20, 20, 190);
+  }
+}
+
+div.map-top-container > .map-objects-btn {
   flex-shrink: 1;
   min-width: 50px;
   display: flex;
