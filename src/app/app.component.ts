@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import debounce from 'lodash/debounce';
+import { Component, OnInit, Inject } from '@angular/core';
+import { fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { ScriptsService } from './services/scripts.service';
+import { WINDOW } from 'ngx-window-token';
 
 @Component({
   selector: 'app-root',
@@ -11,15 +13,17 @@ export class AppComponent implements OnInit {
 
   starCount = 1500;
 
-  constructor(private scriptsService: ScriptsService) {}
+  constructor(private scriptsService: ScriptsService, @Inject(WINDOW) private window: Window) {}
 
   ngOnInit() {
-    // TODO refactor this to an observable
-    const drawStarsDebounce = debounce(() => {
-      this.drawStars();
-    }, 1000);
-    window.addEventListener('resize', drawStarsDebounce);
     this.drawStars();
+    fromEvent(this.window, 'resize')
+    .pipe(
+      debounceTime(1000)
+    )
+    .subscribe(event => {
+      this.drawStars();
+    });
   }
 
   drawStars(): void {

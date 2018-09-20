@@ -9,7 +9,9 @@ import { ISolarSystemSelectData, ISolarSystemListItem } from '../../interfaces/s
 })
 export class SolarSystemSelectComponent implements OnInit {
 
-  mapItems: ISolarSystemListItem[];
+  mapItemColumns: ISolarSystemListItem[][];
+
+  private columns = 2;
 
   constructor(
     public dialogRef: MatDialogRef<SolarSystemSelectComponent>,
@@ -17,7 +19,18 @@ export class SolarSystemSelectComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.mapItems = this.data.mapItems;
+    this.mapItemColumns = [];
+    let mapItems: ISolarSystemListItem[] = [];
+    for (let i = 0; i < this.data.mapItems.length; i++) {
+      if (mapItems.length >= this.data.mapItems.length / this.columns) {
+        this.mapItemColumns.push(mapItems);
+        mapItems = [];
+      }
+      mapItems.push(this.data.mapItems[i]);
+      if (i + 1 === this.data.mapItems.length && mapItems.length) {
+        this.mapItemColumns.push(mapItems);
+      }
+    }
   }
 
   select(item: ISolarSystemListItem) {

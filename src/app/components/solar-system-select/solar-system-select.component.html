@@ -1,11 +1,15 @@
-<h2 mat-dialog-title>Quick Jump</h2>
+<h2 mat-dialog-title class="text-center">Quick Jump</h2>
 <mat-dialog-content>
-    <mat-list>
-      <mat-list-item *ngFor="let item of mapItems">
-        <button mat-button (click)="select(item)">
-            <img [src]="item.image" class="image" />
-            {{ item.name }}
-        </button>
-      </mat-list-item>
-    </mat-list>
+    <div class="row">
+      <div class="col" *ngFor="let mapItems of mapItemColumns">
+          <mat-list>
+            <mat-list-item *ngFor="let item of mapItems">
+              <button mat-button (click)="select(item)">
+                  <img [src]="item.image" class="image" />
+                  {{ item.name }}
+              </button>
+            </mat-list-item>
+          </mat-list>
+      </div>
+    </div>
 </mat-dialog-content>

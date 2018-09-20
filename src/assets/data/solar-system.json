@@ -52,7 +52,7 @@
           "distanceFromPlanet": 384400000,
           "mapData": {
             "iconUrl": "assets/map/map-icon-moon-new.png",
-            "infoWindowContent": "Our Moon is now around {{scaledDiameter}} wide which is about half the size of a pool ball. It orbits around the Earth from a distance of about {{scaledPlanetDistance}}.",
+            "infoWindowContent": "Our Moon is now around {{scaledDiameter}} wide which is about half the size of a pool ball. It orbits around the Earth from a distance of about {{scaledMoonDistance}}.",
             "infoWindowImageUrl": "assets/images/comparisons/moon.png"
           }
         }

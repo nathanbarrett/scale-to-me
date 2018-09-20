@@ -63,6 +63,11 @@ export class SolarSystemService {
           this.disableLightBeamTracking();
         });
       }
+      for (const event of ['zoom_changed', 'dragend']) {
+        this.map.addListener(event, () => {
+          this.moonProximityCheck();
+        });
+      }
       this.solarSystem = data[1];
       this.createMapObjects();
     });
@@ -70,6 +75,39 @@ export class SolarSystemService {
 
   private getSolarSystemData(): Observable<object> {
     return this.http.get('assets/data/solar-system.json');
+  }
+
+  private moonProximityCheck(): void {
+    const earth = <IPlanet>this.getMapObjectByName('Earth');
+    const moon = earth.moons[0];
+    if (this.map.getBounds().contains(earth.mapData.marker.getPosition()) && this.map.getZoom() >= 18) {
+      if (!moon.mapData.marker.getMap()) {
+        this.placeMoons(earth);
+      }
+      return;
+    }
+    moon.mapData.marker.setMap(null);
+  }
+
+  private getMapObjectByName(name: string): IMapObject {
+    if (name.indexOf('Sun') >= 0) {
+      return this.solarSystem.sun;
+    }
+    for (const mapObjectType of ['planets', 'dwarfPlanets', 'satellites']) {
+      for (const mapObject of this.solarSystem[mapObjectType]) {
+        if (mapObject.name === name) {
+          return mapObject;
+        }
+        if (mapObject.moons) {
+          for (const moon of mapObject.moons) {
+            if (moon.name === name) {
+              return moon;
+            }
+          }
+        }
+      }
+    }
+    throw new Error(`Invalid Map Object Name Given: ${name}`);
   }
 
   private createMapObjects(): void {
@@ -86,12 +124,30 @@ export class SolarSystemService {
       this.solarSystem[planetType].forEach((planet: IPlanet) => {
         planet.mapData.marker = this.createMapObjectMarker(planet);
         planet.mapData.infoWindow = this.createMapObjectInfoWindow(planet);
+        if (planet.name === 'Earth') {
+          const moon = planet.moons[0];
+          moon.mapData.marker = this.createMapObjectMarker(moon);
+          moon.mapData.infoWindow = this.createMapObjectInfoWindow(moon);
+        }
       });
     }
     this.solarSystem.satellites.forEach(satellite => {
       satellite.mapData.marker = this.createMapObjectMarker(satellite);
       satellite.mapData.infoWindow = this.createMapObjectInfoWindow(satellite);
     });
+  }
+
+  placeMoons(planet: IPlanet): void {
+    if (!planet.moons) {
+      return;
+    }
+    const moonBearing = this.getMoonBearing();
+    for (const moon of planet.moons) {
+      moon.mapData.marker.setPosition(
+        this.calculateMoonCoordinates(planet.mapData.marker.getPosition(), moonBearing, moon.distanceFromPlanet)
+      );
+      moon.mapData.marker.setMap(this.map);
+    }
   }
 
   placeMapObjects(): void {
@@ -182,6 +238,15 @@ export class SolarSystemService {
         planet.mapData.infoWindow.setContent(
           this.createInfoWindowContent(planet)
         );
+        if (planet.moons) {
+          for (const moon of planet.moons) {
+            if (moon.mapData.infoWindow) {
+              moon.mapData.infoWindow.setContent(
+                this.createInfoWindowContent(moon)
+              );
+            }
+          }
+        }
       });
     }
     this.solarSystem.satellites.forEach(satellite => {
@@ -197,7 +262,7 @@ export class SolarSystemService {
 
   startLightbeam(): void {
     this.map.setCenter(this.solarSystem.sun.mapData.marker.getPosition());
-    this.map.setZoom(17);
+    this.map.setZoom(defaults.DEFAULT_LIGHTBEAM_ZOOM);
     this.lightbeam = {
       line: new google.maps.Polyline({
         map: this.map,
@@ -219,6 +284,15 @@ export class SolarSystemService {
     this.closeAllInfoWindows();
     this.lightbeam.infoWindow.open(this.map);
     this.lightbeam.infoWindow.setPosition(this.center);
+    this.lightbeam.line.addListener('click', event => {
+      this.closeAllInfoWindows();
+      this.lightbeam.infoWindow.open(this.map);
+      const latLng = this.lightbeam.line.getPath().pop();
+      this.lightbeam.infoWindow.setPosition(latLng);
+      this.map.setCenter(latLng);
+      this.map.setZoom(defaults.DEFAULT_LIGHTBEAM_ZOOM);
+      this.lightbeam.tracking = true;
+    });
   }
 
   stopLightbeam(): void {
@@ -240,11 +314,18 @@ export class SolarSystemService {
       }
     ];
     for (const planetType of ['planets', 'dwarfPlanets']) {
-      this.solarSystem[planetType].forEach((planet: IPlanetaryBody) => {
+      this.solarSystem[planetType].forEach((planet: IPlanet) => {
         listItems.push({
           name: planet.name,
           image: `/assets/images/${planet.name.toLowerCase()}-list.png`
         });
+        if (planet.name === 'Earth') {
+          const moon = planet.moons[0];
+          listItems.push({
+            name: moon.name,
+            image: `/assets/images/${moon.name.toLowerCase()}-list.png`
+          });
+        }
       });
     }
     listItems.push({
@@ -255,23 +336,31 @@ export class SolarSystemService {
   }
 
   jumpToMapObject(name: string): void {
-    if (name === 'Sun') {
-      this.map.setCenter(this.solarSystem.sun.mapData.marker.getPosition());
-      this.map.setZoom(defaults.DEFAULT_MAP_ZOOM);
-      this.solarSystem.sun.mapData.infoWindow.open(this.map, this.solarSystem.sun.mapData.marker);
-      return;
+    if (name === 'The Sun') {
+      return this.goToMapObject(this.solarSystem.sun);
+    }
+    if (name === 'Moon') {
+      const earth = <IPlanet>this.getMapObjectByName('Earth');
+      return this.goToMapObject(earth.moons[0]);
     }
     for (const mapObjectType of ['planets', 'dwarfPlanets', 'satellites']) {
       for (const mapObject of this.solarSystem[mapObjectType]) {
         if (mapObject.name === name) {
-          this.map.setCenter(mapObject.mapData.marker.getPosition());
-          this.map.setZoom(defaults.DEFAULT_MAP_ZOOM);
-          this.closeAllInfoWindows();
-          mapObject.mapData.infoWindow.open(this.map, mapObject.mapData.marker);
-          return;
+          return this.goToMapObject(mapObject);
         }
       }
     }
+    throw new Error(`Invalid jump name given: ${name}`);
+  }
+
+  private goToMapObject(mapObject: IMapObject): void {
+    this.map.setZoom(mapObject.name === 'Moon' ? 21 : defaults.DEFAULT_MAP_ZOOM);
+    this.closeAllInfoWindows();
+    if (mapObject.name === 'Moon') {
+      this.placeMoons(<IPlanet>this.getMapObjectByName('Earth'));
+    }
+    this.map.setCenter(mapObject.mapData.marker.getPosition());
+    mapObject.mapData.infoWindow.open(this.map, mapObject.mapData.marker);
   }
 
   private updateLightbeamPosition(refresh: boolean = false): void {
@@ -340,6 +429,12 @@ export class SolarSystemService {
     if (object['radius']) {
       content = this.parseScaledSize(<IPlanetaryBody>object, content);
     }
+    if (object['speed']) {
+      content = this.parseScaledSpeed(<ISatellite>object, content);
+    }
+    if (object['distanceFromPlanet']) {
+      content = this.parseScaledMoonDistance(object['distanceFromPlanet'], content);
+    }
     return content;
   }
 
@@ -374,11 +469,44 @@ export class SolarSystemService {
       if (scaledDiameter > 0.2) {
         return content.replace(replaceString, this.round(scaledDiameter) + ' meters');
       }
-      scaledDiameter = scaledDiameter / 100;
+      scaledDiameter = scaledDiameter * 100;
       return content.replace(replaceString, this.round(scaledDiameter) + ' centimeters');
     }
-    scaledDiameter = geolib.convertUnit('ft', scaledDiameter);
-    return content.replace(replaceString, this.round(scaledDiameter) + ' feet');
+    if (scaledDiameter > 0.33) {
+      scaledDiameter = geolib.convertUnit('ft', scaledDiameter);
+      return content.replace(replaceString, this.round(scaledDiameter) + ' feet');
+    }
+    scaledDiameter = geolib.convertUnit('in', scaledDiameter);
+    return content.replace(replaceString, this.round(scaledDiameter) + ' inches');
+  }
+
+  private parseScaledSpeed(satellite: ISatellite, content: string): string {
+    // scaled down speed in meters per second
+    let speed = satellite.speed * this.solarSystem.scale;
+    const replaceString = '{{scaledSpeed}}';
+    if (this.unitSystemMetric) {
+      speed = speed * 100 * 60;
+      return content.replace(replaceString, this.round(speed) + ' centimeters per minute');
+    }
+    speed = geolib.convertUnit('in', speed) * 60;
+    return content.replace(replaceString, this.round(speed) + ' inches per minute');
+  }
+
+  private parseScaledMoonDistance(actualDistance: number, content: string): string {
+    const scaledDistance = actualDistance * this.solarSystem.scale;
+    let replaceContent = this.round(scaledDistance) + ' meters';
+    if (this.isUnitSystemMetric && scaledDistance < 0.2) {
+      replaceContent = this.round(scaledDistance * 100) + ' centimeters';
+    }
+    if (!this.unitSystemMetric) {
+      let imperialDistance = geolib.convertUnit('yd', scaledDistance);
+      replaceContent = this.round(imperialDistance) + ' yards';
+      if (imperialDistance < 0.2) {
+        imperialDistance = geolib.convertUnit('in', scaledDistance);
+        replaceContent = this.round(imperialDistance) + ' inches';
+      }
+    }
+    return content.replace('{{scaledMoonDistance}}', replaceContent);
   }
 
   private round(number: number, precision: number = 2): number {
@@ -433,9 +561,18 @@ export class SolarSystemService {
     let content = `
       <div class="text-center">
         <div class="info-window-title">${mapObject.name}</div>
-        ${mapObject.mapData.infoWindowImageUrl ? `<img class="info-window-image" src="${mapObject.mapData.infoWindowImageUrl}" />` : ''}
       </div>
-      <div class="info-window-content">${mapObject.mapData.infoWindowContent}</div>
+      <div class="row">
+        ${mapObject.mapData.infoWindowImageUrl ?
+          `<div class="col">
+            <img class="info-window-image" src="${mapObject.mapData.infoWindowImageUrl}" />
+           </div>
+          `
+          : ''}
+          <div class="col info-window-content">
+            ${mapObject.mapData.infoWindowContent}
+          </div>
+      </div>
     `;
     if (mapObject.mapData.didYouKnow) {
       content += `
@@ -449,10 +586,20 @@ export class SolarSystemService {
   private closeAllInfoWindows(): void {
     this.solarSystem.sun.mapData.infoWindow.close();
     const mapObjectTypes = ['planets', 'dwarfPlanets', 'satellites'];
-    for (const mapObjectType of mapObjectTypes) {
-      this.solarSystem[mapObjectType].forEach((mapObject: IMapObject) => {
-        mapObject.mapData.infoWindow.close();
+    for (const planetType of ['planets', 'dwarfPlanets']) {
+      this.solarSystem[planetType].forEach((planet: IPlanet) => {
+        planet.mapData.infoWindow.close();
+        if (planet.moons) {
+          for (const moon of planet.moons) {
+            if (moon.mapData.infoWindow) {
+              moon.mapData.infoWindow.close();
+            }
+          }
+        }
       });
+    }
+    for (const satellite of this.solarSystem.satellites) {
+      satellite.mapData.infoWindow.close();
     }
     if (this.lightbeam) {
       this.lightbeam.infoWindow.close();
@@ -484,5 +631,33 @@ export class SolarSystemService {
     };
     const computedPoint = geolib.computeDestinationPoint(startPoint, scaledDistance, bearing);
     return new google.maps.LatLng(computedPoint.latitude, computedPoint.longitude);
+  }
+
+  private calculateMoonCoordinates(planetPosition: google.maps.LatLng, bearing: Bearing, distanceFromPlanet: number): google.maps.LatLng {
+    const scaledDistance = distanceFromPlanet * this.solarSystem.scale;
+    const moonPosition = geolib.computeDestinationPoint({
+      latitude: planetPosition.lat(),
+      longitude: planetPosition.lng()
+    }, scaledDistance, bearing);
+    return new google.maps.LatLng(moonPosition.latitude, moonPosition.longitude);
+  }
+
+  private getMoonBearing(): Bearing {
+    const bearings = [
+      Bearing.North,
+      Bearing.NorthEast,
+      Bearing.East,
+      Bearing.SouthEast,
+      Bearing.South,
+      Bearing.SouthWest,
+      Bearing.West,
+      Bearing.NorthWest
+    ];
+    for (let i = 0; i < bearings.length; i++) {
+      if (this.bearing === bearings[i]) {
+        return i - 2 < 0 ? bearings[bearings.length + (i - 2)] : bearings[i - 2];
+      }
+    }
+    throw new Error(`Invalid map bearing: ${this.bearing}`);
   }
 }

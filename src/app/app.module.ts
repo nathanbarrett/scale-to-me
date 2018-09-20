@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatRadioModule, MatButtonModule, MatTooltipModule, MatDialogModule, MatListModule } from '@angular/material';
 import { ProximaCentauriComponent } from './components/proxima-centauri/proxima-centauri.component';
 import { SolarSystemSelectComponent } from './components/solar-system-select/solar-system-select.component';
+import { NgxWindowTokenModule } from 'ngx-window-token';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { SolarSystemSelectComponent } from './components/solar-system-select/sol
     MatButtonModule,
     MatTooltipModule,
     MatDialogModule,
-    MatListModule
+    MatListModule,
+    NgxWindowTokenModule
   ],
   providers: [],
   bootstrap: [AppComponent],

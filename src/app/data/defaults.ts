@@ -6,6 +6,8 @@ export const DEFAULT_LNG = -73.9732505;
 
 export const DEFAULT_MAP_ZOOM = 15;
 
+export const DEFAULT_LIGHTBEAM_ZOOM = 18;
+
 export const DEFAULT_BEARING: Bearing = Bearing.NorthEast;
 
 export const DEFAULT_MAP_STYLE: MapStyle = MapStyle.Night;
