@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import scrollMonitor from 'scrollmonitor';
 
 import { SolarSystemService } from '../../services/solar-system.service';
 import { GeolocationService } from '../../services/geolocation.service';
@@ -7,6 +6,8 @@ import { MatRadioChange } from '@angular/material/radio';
 import { MatDialog } from '@angular/material';
 import { ProximaCentauriComponent } from '../proxima-centauri/proxima-centauri.component';
 import { SolarSystemSelectComponent } from '../solar-system-select/solar-system-select.component';
+import { ElementVisibilityService } from '../../services/element-visibility.service';
+import { ScriptsService } from '../../services/scripts.service';
 
 
 @Component({
@@ -18,56 +19,62 @@ export class SolarSystemComponent implements OnInit {
 
   @Input() mapsLoaded: boolean;
 
-  private mapElementsPlaced = false;
-
   private mapElement: HTMLElement;
 
-  private scrollWatcher: any;
-
-  constructor(private solarSystem: SolarSystemService, private geolocation: GeolocationService, private dialog: MatDialog) { }
+  constructor(
+    private solarSystem: SolarSystemService,
+    private geolocation: GeolocationService,
+    private dialog: MatDialog,
+    private elementVisibility: ElementVisibilityService,
+    private scriptsService: ScriptsService
+    ) { }
 
   ngOnInit() {
-    this.mapElement = document.getElementById('solarSystemMap');
-    this.scrollWatcher = scrollMonitor.create(this.mapElement);
-    this.scrollWatcher.enterViewport(() => {
-      if (window.scrollY === 0) {
-        return;
+    this.scriptsService.loadMapsLibrary().subscribe({
+      complete: () => {
+        this.watchMapElement();
       }
-      this.onMapElementVisible();
     });
-    this.scrollWatcher.fullyEnterViewport(() => {
-      this.onMapFullyVisible();
+  }
+
+  private watchMapElement(): void {
+    this.mapElement = document.getElementById('solarSystemMap');
+    const watcher$ = this.elementVisibility.watch(this.mapElement).subscribe(visibility => {
+      if ((visibility.entering || visibility.exiting) && !this.solarSystem.isMapLoaded()) {
+        return this.onMapElementVisible();
+      }
+      if (visibility.full) {
+        if (!this.solarSystem.isMapLoaded()) {
+          this.onMapElementVisible();
+        }
+        if (!this.solarSystem.isMapObjectsPlaced()) {
+          return this.onMapFullyVisible();
+        }
+      }
+      if (this.solarSystem.map && this.solarSystem.isMapObjectsPlaced()) {
+        watcher$.unsubscribe();
+      }
     });
   }
 
   onMapElementVisible() {
-    if (this.solarSystem.map) {
-      return;
-    }
     this.solarSystem.initializeMap(this.mapElement);
     const addressInput = <HTMLInputElement>document.getElementById('solarSystemAddressInput');
-    this.geolocation.bindAutcompleteToInput(addressInput, (latitude: number, longitude: number) => {
-      this.placeChanged(latitude, longitude);
+    this.geolocation.bindAutcompleteToInput(addressInput).subscribe(latLng => {
+      this.placeChanged(latLng.latitude, latLng.longitude);
     });
   }
 
   onMapFullyVisible() {
-    if (this.mapElementsPlaced) {
-      return;
-    }
     this.solarSystem.placeMapObjects();
     setTimeout(() => {
       this.solarSystem.showSunInfoWindow();
     }, 1500);
-    this.mapElementsPlaced = true;
   }
 
   getClientLocation() {
-    if (!navigator.geolocation) {
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(position => {
-      this.solarSystem.moveCenter(position.coords.latitude, position.coords.longitude);
+    this.geolocation.getClientLocation().subscribe(coords => {
+      this.solarSystem.moveCenter(coords.latitude, coords.longitude);
     });
   }
 

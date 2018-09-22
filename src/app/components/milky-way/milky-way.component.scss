@@ -1,0 +1,46 @@
+#milkyWayMap {
+  height: 600px;
+}
+
+.location-icon {
+  cursor: pointer;
+  transition: color 500ms ease-out;
+  &:hover {
+    color: rgb(20, 20, 190);
+  }
+}
+
+div.map-top-container {
+  width: 100%;
+  display: inline-flex;
+}
+
+div.address-input {
+  flex: 1;
+}
+
+div.map-top-container > .rotate-btn {
+  flex-shrink: 1;
+  min-width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  &:active {
+    color: rgb(20, 20, 190);
+  }
+}
+
+div.map-top-container > .map-objects-btn {
+  flex-shrink: 1;
+  min-width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  &:active {
+    color: rgb(20, 20, 190);
+  }
+}

@@ -6,6 +6,7 @@ interface SvgPlanet {
   orbitRadius: number;
   color: string;
   speed: number;
+  id?: string;
 }
 @Component({
   selector: 'app-solar-system-animation',
@@ -84,6 +85,7 @@ export class SolarSystemAnimationComponent implements OnInit {
     this.planets = this.planets.map(planet => {
       planet.radius = this.size * (planet.radius / 100);
       planet.orbitRadius = this.size * (planet.orbitRadius / 100);
+      planet.id = Math.round(Math.random() * 1000000) + planet.name;
       return {...planet};
     });
 

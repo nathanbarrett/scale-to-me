@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   constructor(private scriptsService: ScriptsService, @Inject(WINDOW) private window: Window) {}
 
   ngOnInit() {
+    this.scriptsService.loadMapsLibrary();
     this.drawStars();
     fromEvent(this.window, 'resize')
     .pipe(

@@ -353,6 +353,16 @@ export class SolarSystemService {
     throw new Error(`Invalid jump name given: ${name}`);
   }
 
+  isMapObjectsPlaced(): boolean {
+    return !!this.solarSystem.sun &&
+            !!this.solarSystem.sun.mapData.marker &&
+            !!this.solarSystem.sun.mapData.marker.getMap();
+  }
+
+  isMapLoaded(): boolean {
+    return !!this.map;
+  }
+
   private goToMapObject(mapObject: IMapObject): void {
     this.map.setZoom(mapObject.name === 'Moon' ? 21 : defaults.DEFAULT_MAP_ZOOM);
     this.closeAllInfoWindows();

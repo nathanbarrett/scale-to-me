@@ -9,10 +9,10 @@
                 stroke="none"
                 stroke-width="1"
                 fill="none"
-                [attr.id]="'ssAnimationPath' + planet.name" />
+                [attr.id]="planet.id" />
          <circle cx="0" cy="0" [attr.r]="planet.radius" [attr.fill]="planet.color">
           <animateMotion [attr.dur]="planet.speed + 's'" repeatCount="indefinite">
-            <mpath [attr.xlink:href]="'#ssAnimationPath' + planet.name"/>
+            <mpath [attr.xlink:href]="'#' + planet.id"/>
           </animateMotion>
          </circle>
        </g>

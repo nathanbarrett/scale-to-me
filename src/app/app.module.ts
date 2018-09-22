@@ -12,6 +12,8 @@ import { MatRadioModule, MatButtonModule, MatTooltipModule, MatDialogModule, Mat
 import { ProximaCentauriComponent } from './components/proxima-centauri/proxima-centauri.component';
 import { SolarSystemSelectComponent } from './components/solar-system-select/solar-system-select.component';
 import { NgxWindowTokenModule } from 'ngx-window-token';
+import { MilkyWayExplainerComponent } from './components/milky-way-explainer/milky-way-explainer.component';
+import { MilkyWayComponent } from './components/milky-way/milky-way.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { NgxWindowTokenModule } from 'ngx-window-token';
     SolarSystemExplainerComponent,
     SolarSystemComponent,
     ProximaCentauriComponent,
-    SolarSystemSelectComponent
+    SolarSystemSelectComponent,
+    MilkyWayExplainerComponent,
+    MilkyWayComponent
   ],
   imports: [
     BrowserModule,

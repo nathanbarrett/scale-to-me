@@ -8,3 +8,8 @@ export interface IMapData {
   infoWindowImageUrl?: string;
   didYouKnow?: string;
 }
+
+export interface ICoordinates {
+  latitude: number;
+  longitude: number;
+}
