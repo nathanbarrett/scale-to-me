@@ -3,6 +3,7 @@ import { ElementVisibilityService } from '../../services/element-visibility.serv
 import { ScriptsService } from '../../services/scripts.service';
 import { MilkyWayService } from '../../services/milky-way.service';
 import { GeolocationService } from '../../services/geolocation.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-milky-way',
@@ -12,6 +13,8 @@ import { GeolocationService } from '../../services/geolocation.service';
 export class MilkyWayComponent implements OnInit {
 
   private mapElement: HTMLElement;
+
+  private mapWatcher: Subscription;
 
   constructor(
     private elementVisibility: ElementVisibilityService,
@@ -28,14 +31,17 @@ export class MilkyWayComponent implements OnInit {
     });
   }
 
+  centerOnClientLocation() {
+    this.geolocation.getClientLocation().subscribe(coordinates => {
+      this.milkyWay.placeQuarter(coordinates.latitude, coordinates.longitude);
+    });
+  }
+
   private watchMapElement(): void {
     this.mapElement = document.getElementById('milkyWayMap');
-    const watcher$ = this.elementVisibility.watch(this.mapElement).subscribe(visibility => {
+    this.mapWatcher = this.elementVisibility.watch(this.mapElement).subscribe(visibility => {
       if ((visibility.entering || visibility.exiting || visibility.full) && !this.milkyWay.isMapLoaded()) {
         this.onMapElementVisible();
-      }
-      if (this.milkyWay.isMapLoaded()) {
-        watcher$.unsubscribe();
       }
     });
   }
@@ -44,8 +50,19 @@ export class MilkyWayComponent implements OnInit {
     this.milkyWay.initMap(this.mapElement, this.geolocation.getLastLocation());
     const autocompleteInput = <HTMLInputElement>document.getElementById('milkyWayAddressInput');
     this.geolocation.bindAutcompleteToInput(autocompleteInput).subscribe(coordinates => {
-      this.milkyWay.moveMapCenter(coordinates.latitude, coordinates.longitude);
+      this.milkyWay.placeQuarter(coordinates.latitude, coordinates.longitude);
     });
+    setTimeout(() => {
+      this.mapWatcher.unsubscribe();
+    }, 1);
+  }
+
+  isQuarterPlaced(): boolean {
+    return this.milkyWay.isQuarterPlaced();
+  }
+
+  showMilkyWay() {
+    this.milkyWay.showMilkyWay();
   }
 
 }

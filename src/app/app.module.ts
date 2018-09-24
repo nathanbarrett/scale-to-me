@@ -14,6 +14,7 @@ import { SolarSystemSelectComponent } from './components/solar-system-select/sol
 import { NgxWindowTokenModule } from 'ngx-window-token';
 import { MilkyWayExplainerComponent } from './components/milky-way-explainer/milky-way-explainer.component';
 import { MilkyWayComponent } from './components/milky-way/milky-way.component';
+import { SolarSystemGlobeComponent } from './components/solar-system-globe/solar-system-globe.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MilkyWayComponent } from './components/milky-way/milky-way.component';
     ProximaCentauriComponent,
     SolarSystemSelectComponent,
     MilkyWayExplainerComponent,
-    MilkyWayComponent
+    MilkyWayComponent,
+    SolarSystemGlobeComponent
   ],
   imports: [
     BrowserModule,

@@ -3,17 +3,32 @@
       <div class="map-top-container">
         <div class="address-input">
             <div class="input-group">
-              <i class="material-icons location-icon" matTooltip="center to me">my_location</i>
+              <i class="material-icons location-icon" 
+                  (click)="centerOnClientLocation()" 
+                  matTooltip="center to me">my_location</i>
               <input type="text" 
                     class="form-item"   
                     id="milkyWayAddressInput"
                     placeholder="Place quarter at an address" />
             </div>
         </div>
-        <button class="show-milky-way-btn" mat-flat-button>Show The Milky Way</button>
+        <button class="show-milky-way-btn" mat-flat-button [disabled]="!isQuarterPlaced()" (click)="showMilkyWay()">Show The Milky Way</button>
       </div>
       <div class="map-container">
         <div id="milkyWayMap"></div>
+      </div>
+      <div style="margin-top: 20px;">
+        Some interesting things to note about our scaled down Milky Way
+        <ul>
+          <li>
+            While the Milky Way is not uniformly dense, if we assume that there are 300 billion stars in the Milky Way that
+            would average out to about one star for every 22 square meters.
+          </li>
+          <li>
+            The nearest galaxy to us, Andromida, is now 64,772 kilometers away. The Earth's actual circumference is 40,075
+            kilometers to put it in perspective.
+          </li>
+        </ul>
       </div>
     </div>
 </div>
