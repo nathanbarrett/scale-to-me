@@ -1,10 +1,10 @@
-import { Eon } from '../../interfaces/timeline-items'
-import { CalendarItemType } from '../../enums/calendar-item-type.enum'
-import * as Eras from './eras'
+import { Eon } from "../../interfaces/timeline-items";
+import { CalendarItemType } from "../../enums/calendar-item-type.enum";
+import * as Eras from "./eras";
 
 export let eons: Eon[] = [
   {
-    name: 'Hadean',
+    name: "Hadean",
     hue: 0,
     description: `The Earth is formed out of debris around the solar protoplanetary disk. There is no life. Temperatures are extremely hot,
      with frequent volcanic activity and hellish environments. The atmosphere is nebular. Possible early oceans or bodies of liquid water.
@@ -16,7 +16,7 @@ export let eons: Eon[] = [
     eras: []
   },
   {
-    name: 'Archean',
+    name: "Archean",
     hue: 25,
     description: `Prokaryote life, the first form of life, emerges at the very beginning of this eon, in a process known as abiogenesis.
      The continents of Ur, Vaalbara and Kenorland may have been formed around this time. The atmosphere is composed of volcanic and
@@ -28,7 +28,7 @@ export let eons: Eon[] = [
     eras: [...Eras.ArcheanEras]
   },
   {
-    name: 'Proterozoic',
+    name: "Proterozoic",
     hue: 50,
     description: `Eukaryotes, a more complex form of life, emerge, including some forms of multicellular organisms. Bacteria begin
      producing oxygen, shaping the third and current of Earth's atmospheres. Plants, later animals and possibly earlier forms of fungi form
@@ -42,7 +42,7 @@ export let eons: Eon[] = [
     eras: [...Eras.ProterozoicEras]
   },
   {
-    name: 'Phanerozoic',
+    name: "Phanerozoic",
     hue: 75,
     description: `Complex life, including vertebrates, begin to dominate the Earth's ocean in a process known as the Cambrian explosion.
      Pangaea forms and later dissolves into Laurasia and Gondwana. Gradually, life expands to land and all familiar forms of plants, animals
@@ -54,6 +54,5 @@ export let eons: Eon[] = [
     yearsAgoEnd: 0,
     date: null,
     eras: [...Eras.PhanerozoicEras]
-
   }
-]
+];

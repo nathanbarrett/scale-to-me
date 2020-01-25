@@ -1,5 +1,5 @@
-import { CalendarItem } from '../../interfaces/calendar-item'
-import { CalendarItemType } from '../../enums/calendar-item-type.enum'
+import { CalendarItem } from '../../interfaces/calendar-item';
+import { CalendarItemType } from '../../enums/calendar-item-type.enum';
 
 export let MioceneAges: CalendarItem[] = [
   {
@@ -14,7 +14,7 @@ export let MioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 23030000,
     yearsAgoEnd: 20440000,
-    date: null,
+    date: null
   },
   {
     name: 'Burdigalian',
@@ -26,7 +26,7 @@ export let MioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 20440000,
     yearsAgoEnd: 15970000,
-    date: null,
+    date: null
   },
   {
     name: 'Langhian',
@@ -38,7 +38,7 @@ export let MioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 15970000,
     yearsAgoEnd: 13820000,
-    date: null,
+    date: null
   },
   {
     name: 'Serravallian',
@@ -47,7 +47,7 @@ export let MioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 13820000,
     yearsAgoEnd: 11630000,
-    date: null,
+    date: null
   },
   {
     name: 'Tortonian',
@@ -56,7 +56,7 @@ export let MioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 11630000,
     yearsAgoEnd: 7246000,
-    date: null,
+    date: null
   },
   {
     name: 'Messinian',
@@ -65,9 +65,9 @@ export let MioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 7246000,
     yearsAgoEnd: 5333000,
-    date: null,
+    date: null
   }
-]
+];
 
 export let PlioceneAges: CalendarItem[] = [
   {
@@ -78,7 +78,7 @@ export let PlioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 5333000,
     yearsAgoEnd: 3600000,
-    date: null,
+    date: null
   },
   {
     name: 'Piacenzian',
@@ -89,9 +89,9 @@ export let PlioceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 3600000,
     yearsAgoEnd: 2588000,
-    date: null,
-  },
-]
+    date: null
+  }
+];
 
 export let PleistoceneAges: CalendarItem[] = [
   {
@@ -101,7 +101,7 @@ export let PleistoceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 2588000,
     yearsAgoEnd: 1800000,
-    date: null,
+    date: null
   },
   {
     name: 'Calabrian',
@@ -110,7 +110,7 @@ export let PleistoceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 1800000,
     yearsAgoEnd: 781000,
-    date: null,
+    date: null
   },
   {
     name: 'Chibanian',
@@ -119,7 +119,7 @@ export let PleistoceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 781000,
     yearsAgoEnd: 126000,
-    date: null,
+    date: null
   },
   {
     name: 'Tarantian',
@@ -129,6 +129,6 @@ export let PleistoceneAges: CalendarItem[] = [
     type: CalendarItemType.Age,
     yearsAgo: 126000,
     yearsAgoEnd: 11700,
-    date: null,
-  },
-]
+    date: null
+  }
+];

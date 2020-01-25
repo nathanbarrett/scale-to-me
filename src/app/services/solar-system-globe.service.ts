@@ -8,6 +8,6 @@ export class SolarSystemGlobeService {
   constructor() { }
 
   initGlobe(elementId: string): void {
-    const viewer = new Cesium.Viewer(elementId);
+
   }
 }
