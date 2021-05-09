@@ -27,7 +27,7 @@
     "cesium": "^1.65.0",
     "core-js": "^2.6.11",
     "geolib": "^2.0.24",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "moment": "^2.24.0",
     "ngx-window-token": "^1.0.2",
