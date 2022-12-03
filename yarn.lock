@@ -1870,8 +1870,8 @@ decamelize@^2.0.0:
     xregexp "4.0.0"
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
 
 deep-equal@^1.0.1:
   version "1.0.1"
@@ -6559,9 +6559,9 @@ typescript@3.1.6:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
 
-typescript@3.6.*:
-  version "3.6.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.5.tgz#dae20114a7b4ff4bd642db9c8c699f2953e8bbdb"
+typescript@3.5.*:
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
 
 uglify-es@^3.3.4:
   version "3.3.9"
